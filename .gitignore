@@ -1,0 +1,66 @@
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editors and local tooling
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# WordPress core when a local site is installed at the repository root
+/wp-admin/
+/wp-includes/
+/wp-*.php
+!/wp-content/
+
+# Local WordPress configuration
+/wp-config.php
+/wp-config-*.php
+!/wp-config-sample.php
+
+# WordPress runtime data
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+/wp-content/backup*/
+/wp-content/backups/
+/wp-content/ai1wm-backups/
+/wp-content/debug.log
+/wp-content/*.log
+
+# Logs, caches, temporary files, and local databases
+*.log
+*.tmp
+*.temp
+*.cache
+*.sql
+*.sql.gz
+*.sqlite
+*.sqlite3
+*.dump
+*.bak
+*.backup
+
+# Archives and generated backups
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# Test and build output
+coverage/
+dist/
+build/
+.phpunit.result.cache
