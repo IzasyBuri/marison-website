@@ -8,7 +8,7 @@
 | Perusahaan | Marison Group |
 | Domain | `marison.id` |
 | Versi | 1.0 |
-| Status | Draft untuk review manusia |
+| Status | Approved v1.0 |
 | Platform | WordPress |
 | Bahasa dokumen | Bahasa Indonesia |
 
@@ -213,9 +213,10 @@ secara konseptual membatasi data hanya pada Jawa.
 ## 12. Kebutuhan Proyek Perumahan
 
 Setiap proyek dapat memiliki nama, status, provinsi, kota/kabupaten, alamat,
-lokasi peta, deskripsi, gambar utama, galeri, fasilitas, tipe rumah, progres
-pembangunan, site plan, branch office yang relevan, kontak publik branch office,
-assignment marketing internal, dan unit perumahan.
+lokasi peta, deskripsi, gambar utama, galeri, fasilitas, tipe rumah, current
+progress percentage, optional short progress/status description, site plan, tepat
+satu Primary Branch Office, kontak publik branch office, assignment marketing
+internal, dan unit perumahan.
 
 Status yang ditampilkan kepada pengguna:
 
@@ -226,6 +227,11 @@ Status yang ditampilkan kepada pengguna:
 Informasi yang tidak tersedia tidak boleh ditampilkan seolah-olah tersedia. Detail
 tampilan dan struktur teknis pengelolaan data ditentukan pada tahap desain dan
 content model terpisah.
+
+Progress versi pertama tetap sederhana. Riwayat atau pembaruan pembangunan yang
+lebih rinci dapat dipublikasikan melalui Article atau Project Update yang terkait
+dengan proyek. Structured milestone management bukan persyaratan versi pertama dan
+dapat dipertimbangkan kembali kemudian.
 
 Harga rumah tidak wajib ditampilkan pada versi pertama. Produk harus memungkinkan
 harga ditambahkan kemudian jika keputusan bisnis berubah, tanpa menjadikannya
@@ -238,8 +244,12 @@ syarat peluncuran.
 1. Sistem harus mendukung unit perumahan individual.
 2. Data unit individual adalah sumber kebenaran yang diprioritaskan jika tersedia.
 3. Setiap unit mendukung Tersedia, Terbooking, atau Terjual.
-4. Status dapat dikelola administrator.
-5. Harga publik bukan syarat untuk menampilkan status unit pada versi pertama.
+4. Setiap Housing Unit individual harus dimiliki tepat satu Project.
+5. Unit dapat merujuk House Type bila relevan.
+6. Jika Unit merujuk House Type, House Type tersebut harus berasal dari Project
+   yang sama.
+7. Status dapat dikelola administrator.
+8. Harga publik bukan syarat untuk menampilkan status unit pada versi pertama.
 
 ### Cara tampil publik
 
@@ -287,31 +297,36 @@ bukan definisi WordPress field atau database schema.
 1. Website mendukung WhatsApp, telepon, dan formulir kontak.
 2. Website mendukung lebih dari satu branch office.
 3. Satu branch office dapat menangani lebih dari satu proyek.
-4. Setiap proyek harus terhubung dengan branch office yang relevan.
-5. Setiap branch office dapat memiliki kontak publik admin, termasuk WhatsApp dan
-   telephone.
-6. Alur kontak publik yang normal adalah: pengunjung → proyek → branch office
-   admin → tim atau personel marketing yang sesuai.
-7. WhatsApp publik proyek secara default menuju kontak admin branch office, bukan
-   langsung ke nomor WhatsApp personel marketing.
-8. Assignment internal kepada tim atau personel marketing tetap harus dapat
-   mendukung routing operasional. Satu personel atau tim dapat menangani beberapa
-   proyek.
-9. Kontak dari Proyek A tidak boleh otomatis diarahkan ke branch office Proyek B.
-10. Konteks proyek harus tetap melekat pada percakapan atau lead sehingga branch
+4. Setiap proyek harus memiliki tepat satu Primary Branch Office untuk public
+   contact routing versi pertama.
+5. Setiap branch office memiliki satu Primary Public WhatsApp dan dapat memiliki
+   telephone publik secara opsional.
+6. Alur kontak publik yang normal adalah: pengunjung → proyek → Primary Branch
+   Office → Primary Public WhatsApp.
+7. Public Project CTA tidak boleh secara default menuju nomor WhatsApp individual
+   personel marketing.
+8. Assignment kepada Marketing Person/Team adalah informasi internal. Assignment
+   dapat aktif, inactive, atau previous, dan sejarah yang berguna dapat dipelihara.
+9. Satu personel atau tim marketing dapat menangani beberapa proyek, dan satu proyek
+   dapat memiliki lebih dari satu assignment internal.
+10. Kontak dari Proyek A tidak boleh otomatis diarahkan ke Primary Branch Office
+    Proyek B.
+11. Konteks proyek harus tetap melekat pada percakapan atau lead sehingga branch
     admin dapat mengetahui proyek yang ditanyakan.
-11. Lead minimal disimpan di WordPress dan branch office/admin yang relevan diberi
+12. Lead minimal disimpan di WordPress dan branch office/admin yang relevan diberi
     notifikasi.
-12. Branch admin melakukan routing internal ke tim atau personel marketing yang
+13. Branch admin melakukan routing internal ke tim atau personel marketing yang
     sesuai.
-13. CRM tidak diperlukan untuk peluncuran versi pertama.
-14. Formulir lead utama menggunakan field wajib: nama, nomor WhatsApp/telepon,
+14. CRM tidak diperlukan untuk peluncuran versi pertama. Tidak termasuk sales
+    pipeline, automatic assignment, commission tracking, lead rotation, atau
+    salesperson dashboard.
+15. Formulir lead utama menggunakan field wajib: nama, nomor WhatsApp/telepon,
     proyek yang diminati, dan consent pemrosesan data pribadi. Pesan bersifat
     opsional.
-15. Formulir harus singkat dan tidak boleh meminta field kualifikasi yang tidak
+16. Formulir harus singkat dan tidak boleh meminta field kualifikasi yang tidak
     diperlukan pada kontak pertama.
-16. Beranda mengutamakan penemuan proyek sebelum meminta data pribadi.
-17. Formulir besar tidak boleh menjadi pengalaman utama pada layar pertama.
+17. Beranda mengutamakan penemuan proyek sebelum meminta data pribadi.
+18. Formulir besar tidak boleh menjadi pengalaman utama pada layar pertama.
 
 ## 16. Kebutuhan KPR
 
@@ -324,11 +339,16 @@ bukan definisi WordPress field atau database schema.
 6. Produk harus secara konseptual mendukung konfigurasi KPR scheme yang dapat
    memiliki nama scheme, bunga tahunan, pilihan tenor, asumsi uang muka minimum
    atau default, tanggal berlaku, status aktif/nonaktif, dan disclaimer.
-7. Versi pertama dapat memakai satu scheme aktif default pada kalkulator publik,
-   tetapi produk tidak boleh menganggap hanya satu scheme akan selalu ada.
-8. Parameter KPR pada akhirnya dapat diubah oleh admin yang berwenang.
-9. Formula harus didokumentasikan sebelum implementasi.
-10. Rumus, sumber suku bunga, pembulatan, dan skenario pembiayaan belum
+7. Sistem dapat menyimpan lebih dari satu KPR Scheme.
+8. Versi pertama hanya boleh memiliki tepat satu eligible KPR Scheme sebagai
+   PUBLIC DEFAULT SCHEME pada satu waktu.
+9. Kalkulator publik menggunakan PUBLIC DEFAULT SCHEME tersebut.
+10. Scheme inactive tidak boleh menjadi PUBLIC DEFAULT SCHEME.
+11. Scheme historis dapat dipertahankan jika masih berguna.
+12. Produk tidak boleh menganggap hanya satu scheme akan selalu ada.
+13. Parameter KPR pada akhirnya dapat diubah oleh admin yang berwenang.
+14. Formula harus didokumentasikan sebelum implementasi.
+15. Rumus, sumber suku bunga, pembulatan, dan skenario pembiayaan belum
     diimplementasikan dalam pekerjaan PRD ini.
 
 ## 17. Kebutuhan Artikel
@@ -338,7 +358,10 @@ perusahaan, pembaruan proyek, dan informasi berguna bagi pemilik rumah.
 
 Artikel harus mudah ditemukan oleh pengguna dan membantu mesin pencari memahami
 topik Marison. Staf harus dapat membuat, mengedit, dan menerbitkan artikel tanpa
-mengubah kode.
+mengubah kode. Sebuah artikel dapat tidak memiliki hubungan proyek, terkait dengan
+satu proyek, atau terkait dengan beberapa proyek. General KPR education dapat
+berdiri sendiri; construction update dapat terkait satu proyek; regional/company
+news dapat terkait beberapa proyek. Tidak setiap artikel wajib memiliki proyek.
 
 ## 18. Kebutuhan Karier
 
@@ -348,7 +371,11 @@ mengubah kode.
 - daftar lowongan;
 - detail lowongan;
 - informasi yang mudah dipahami pencari kerja;
-- instruksi atau jalur lamaran sesuai keputusan Marison.
+- application instructions, recruitment email, atau external application URL.
+
+Versi pertama tidak perlu menyimpan job applicant records. Applicant database, CV
+storage, candidate tracking, internal applicant form, dan internal recruitment
+management system berada di luar versi pertama.
 
 ### Perbaikan setelah peluncuran
 
@@ -358,8 +385,8 @@ mengubah kode.
 - sistem manajemen rekrutmen kompleks;
 - integrasi otomatis dengan sistem HR.
 
-Versi pertama tidak membangun sistem recruitment management kompleks. Mekanisme
-penerimaan lamaran harus diputuskan sebelum implementasi detail.
+Versi pertama tidak membangun sistem recruitment management kompleks. Metode
+aplikasi tidak dikunci ke satu provider atau satu metode tertentu.
 
 ## 19. Kebutuhan Multibahasa
 
@@ -389,6 +416,11 @@ aturan akses yang disetujui.
 Pengelolaan konten dan layout tetap terpisah. Administrator seharusnya tidak perlu
 mengubah layout untuk memperbarui informasi. Rincian peran, persetujuan, dan
 riwayat perubahan masih merupakan pertanyaan terbuka.
+
+Lead records are INTERNAL ONLY dan hanya dapat diakses oleh personel Marison yang
+berwenang. Durasi retensi, detailed access policy, deletion procedure, dan privacy
+governance harus ditentukan **BEFORE LAUNCH** dan **NON-BLOCKING FOR CURRENT
+PRODUCT DESIGN**. PRD ini tidak menetapkan durasi retensi atau kebijakan teknisnya.
 
 ## 21. Kebutuhan Mobile
 
@@ -466,9 +498,13 @@ optimasi teknis tidak ditulis dalam PRD ini.
 4. Arahkan kontak ke pihak marketing yang relevan.
 5. Jangan membagikan data ke pihak yang tidak berkaitan tanpa dasar dan
    persetujuan yang sesuai.
-6. Tetapkan retensi, akses internal, consent, pemberitahuan privasi, dan
-   penghapusan data sebelum formulir produksi digunakan.
-7. Data uji dan sample data tidak boleh berisi data pribadi nyata.
+6. Lead records are INTERNAL ONLY dan aksesnya dibatasi untuk personel Marison yang
+   berwenang.
+7. Tetapkan retensi, detailed access policy, consent, pemberitahuan privasi,
+   deletion procedure, dan privacy governance sebelum formulir produksi digunakan.
+8. Durasi retensi dan rincian access policy tetap **TO BE DEFINED** dan merupakan
+   keputusan **BEFORE LAUNCH**, bukan blocker untuk current product design.
+9. Data uji dan sample data tidak boleh berisi data pribadi nyata.
 
 ## 27. Ruang Lingkup Versi 1
 
@@ -586,16 +622,16 @@ Asumsi ini berasal dari arahan proyek, bukan keputusan tambahan:
 
 ## 32. Pertanyaan Terbuka
 
-Pertanyaan berikut belum diputuskan dan tidak dijawab atas nama Marison. Q03,
-Q04, Q06, Q07, Q08, Q13, dan Q14 telah diselesaikan sebagai keputusan produk
-dan tidak lagi termasuk daftar pertanyaan terbuka.
+Pertanyaan berikut belum diputuskan dan tidak dijawab atas nama Marison. Keputusan
+yang sudah disetujui tidak lagi dicantumkan sebagai unresolved question.
 
 Q01. Siapa pemilik dan penanggung jawab pembaruan data setiap proyek dan unit?
 Q02. Seberapa sering status proyek dan unit harus diperbarui?
 Q05. Apakah alamat dan peta memakai format atau provider tertentu?
-Q09. Berapa lama data leads disimpan dan siapa yang boleh mengaksesnya?
+Q09. Berapa lama data leads disimpan dan siapa yang boleh mengaksesnya? Durasi
+retensi dan detailed access policy: **BEFORE LAUNCH; NON-BLOCKING FOR CURRENT
+PRODUCT DESIGN**.
 Q10. Apakah CRM atau sistem marketing akan diintegrasikan kemudian?
-Q11. Apa jalur lamaran karier versi pertama: email, formulir, atau kanal lain?
 Q12. Siapa yang menulis, meninjau, dan menerjemahkan artikel serta lowongan?
 Q15. Siapa yang boleh mengubah parameter KPR?
 Q16. Apakah informasi harga publik akan diaktifkan setelah peluncuran?
@@ -603,7 +639,8 @@ Q17. Apakah ada aturan merek final selain palet preliminary?
 Q18. Apa target angka untuk leads, simulasi, SEO, dan performance?
 Q19. Bagaimana rekam jejak dan portofolio Marison dikelompokkan?
 Q20. Apa alur persetujuan sebelum proyek, unit, artikel, atau lowongan diterbitkan?
-Q21. Kebijakan privasi, consent, dan penghapusan data apa yang berlaku?
+Q21. Kebijakan privasi, consent, deletion procedure, dan privacy governance apa
+yang berlaku? Keputusan ini diperlukan **BEFORE LAUNCH**.
 Q22. URL dan struktur navigasi mana yang harus diprioritaskan?
 
 ## 33. Kriteria Penerimaan
@@ -627,10 +664,17 @@ dijawab “ya” atau memiliki keputusan tertulis.
 - [ ] Status proyek dan status unit ditetapkan dalam istilah Indonesia.
 - [ ] Sistem mendukung data unit individual sebagai sumber kebenaran yang
       diprioritaskan.
+- [ ] Setiap Housing Unit dimiliki tepat satu Project.
+- [ ] Unit dapat merujuk House Type, tetapi House Type tersebut harus berasal dari
+      Project yang sama.
+- [ ] Project memiliki current progress percentage dan optional short
+      progress/status description.
+- [ ] Structured milestone management tidak diperlukan untuk versi pertama.
 - [ ] Proyek dapat menampilkan daftar unit individual, ringkasan ketersediaan,
       atau site plan interaktif di masa depan.
 - [ ] Ringkasan ketersediaan diturunkan dari unit individual bila data unit ada;
-      ringkasan manual hanya menjadi opsi sementara bila inventaris belum digital.
+      ringkasan manual hanya menjadi opsi sementara bila inventaris belum digital
+      dan tidak bersaing dengan derived summary.
 - [ ] Satu proyek dapat memiliki lebih dari satu tipe rumah dengan informasi
       minimum yang disepakati.
 - [ ] Kebutuhan proyek, lokasi, dan unit dijelaskan tanpa mengunci database.
@@ -640,9 +684,11 @@ dijawab “ya” atau memiliki keputusan tertulis.
 ### Kontak, KPR, konten, dan karier
 
 - [ ] WhatsApp, telepon, dan formulir kontak termasuk versi 1.
-- [ ] Setiap proyek terhubung ke branch office yang benar.
-- [ ] WhatsApp publik proyek menuju admin branch office yang relevan, bukan
-      langsung ke personel marketing secara default.
+- [ ] Setiap Project memiliki tepat satu Primary Branch Office untuk versi 1.
+- [ ] Setiap Branch memiliki satu Primary Public WhatsApp dan telephone publik
+      bersifat opsional.
+- [ ] WhatsApp publik Project resolves melalui Primary Branch Office dan tidak
+      memerlukan kontak individual Marketing sebagai CTA default.
 - [ ] Lead menyimpan konteks proyek dan branch admin dapat mengidentifikasi
       proyek asal lead untuk routing internal.
 - [ ] Formulir utama dapat bekerja hanya dengan nama, nomor WhatsApp/telepon,
@@ -650,11 +696,16 @@ dijawab “ya” atau memiliki keputusan tertulis.
 - [ ] Edukasi dan simulasi KPR termasuk versi 1.
 - [ ] Input konseptual simulasi tercantum.
 - [ ] Disclaimer bahwa hasil simulasi bukan persetujuan bank tercantum.
-- [ ] Konfigurasi KPR dapat mendukung scheme yang dapat diedit admin berwenang;
-      V1 dapat memakai satu scheme aktif default.
+- [ ] Konfigurasi KPR dapat mendukung lebih dari satu scheme dan tepat satu
+      eligible scheme menjadi PUBLIC DEFAULT SCHEME pada satu waktu.
+- [ ] Scheme inactive tidak dapat menjadi PUBLIC DEFAULT SCHEME.
 - [ ] Artikel, karier, daftar lowongan, dan detail lowongan termasuk versi 1.
-- [ ] Recruitment kompleks dan lamaran langsung dipisahkan sebagai keputusan atau
-      perbaikan lanjutan.
+- [ ] Career Vacancy mendukung instructions, recruitment email, atau external URL
+      tanpa menyimpan job applicant records pada versi pertama.
+- [ ] Applicant database, CV storage, candidate tracking, dan internal recruitment
+      management system berada di luar versi pertama.
+- [ ] Article dapat tidak memiliki Project, terkait satu Project, atau terkait
+      beberapa Project.
 
 ### Bahasa, admin, dan kualitas pengalaman
 
@@ -674,6 +725,9 @@ dijawab “ya” atau memiliki keputusan tertulis.
 - [ ] Indikator keberhasilan tidak mengarang angka; target yang belum diketahui
       ditandai **TO BE DEFINED**.
 - [ ] Pertanyaan yang belum diputuskan tercantum di Open Questions.
+- [ ] Lead retention, detailed access policy, deletion procedure, dan privacy
+      governance tetap ditandai BEFORE LAUNCH dan NON-BLOCKING FOR CURRENT PRODUCT
+      DESIGN.
 - [ ] Tidak ada keputusan bisnis baru yang disamarkan sebagai requirement.
 
 Implementasi berikutnya harus dapat ditinjau terhadap checklist ini. Perubahan
