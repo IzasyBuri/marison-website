@@ -163,12 +163,17 @@ the repository source, documentation, and approved non-sensitive sample data.
 | `wp-content/plugins/marison-core/` | Future Marison business-data plugin |
 | `sample-data/` | Future non-sensitive reproducible development data |
 
-## Foundation-phase limits
+## Content-model foundation phase
 
-The current project phase does not include homepage implementation, visual design,
-real project content, project post types, unit management, Elementor, page
-builders, production connections, or deployment.
+The current implementation phase includes only the first managed content-model group:
+Project, Project Status, House Type, Branch Office, Marketing Person / Team, Location,
+and Facility inside `marison-core`.
 
-The foundation phase also does not include Project, House Type, Unit, Lead, Branch,
-Marketing, KPR, Career, Location, Facility, multilingual, form, or public product
-feature implementation.
+It does not include homepage implementation, visual product design, Housing Unit
+tables, Leads, KPR, Career, multilingual integration, forms, public REST routes,
+imports/exports, production connections, or deployment.
+
+Location V1 enforces one three-level hierarchy and only allows Project assignment
+to a depth-three City / Regency term. It does not store a separate semantic level
+field or verify that a term name is actually a Country, Province, City, or Regency;
+staff should follow the displayed Country → Province → City / Regency guidance.
