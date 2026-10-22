@@ -38,6 +38,65 @@ git switch -c feat/short-task-name
 Use a clear branch name, such as `feat/project-search` or
 `fix/mobile-navigation`.
 
+## Local prerequisites
+
+The foundation environment uses Docker Compose with the official WordPress and
+MariaDB images. Install Docker Desktop with its Linux engine enabled before
+starting the local runtime. Git is required. PHP, Composer, Node.js, and npm are
+useful for later implementation work but are not required by the foundation
+runtime itself.
+
+Docker, Docker Compose, and image versions are selected in `docker-compose.yml`
+through `.env`. The committed `.env.example` records the current development
+version policy; update image versions deliberately, validate them locally, and
+review the WordPress upgrade before changing the shared example.
+
+## Local WordPress setup
+
+From the repository root on a new computer:
+
+```powershell
+Copy-Item .env.example .env
+docker compose config
+docker compose up -d
+```
+
+Open `http://localhost:8080/` and complete the normal WordPress setup wizard.
+Choose a local-only administrator username and password; never reuse production
+credentials. The database connection is supplied by Compose. Activate **Marison**
+under **Appearance → Themes** and **Marison Core** under **Plugins**.
+
+The repository code is mounted into:
+
+```text
+wp-content/themes/marison/       → /var/www/html/wp-content/themes/marison/
+wp-content/plugins/marison-core/ → /var/www/html/wp-content/plugins/marison-core/
+```
+
+WordPress core is provided by the container and is not committed to Git. The
+database and WordPress runtime volume are local Docker volumes. Uploads and debug
+logs are local runtime data and are ignored by Git.
+
+Useful lifecycle commands:
+
+```powershell
+docker compose ps
+docker compose logs -f wordpress
+docker compose stop
+docker compose start
+docker compose down
+```
+
+To intentionally reset the local WordPress installation, including its database,
+first confirm that no local content is needed and run:
+
+```powershell
+docker compose down -v
+```
+
+This is a local destructive operation only. It does not affect another computer,
+GitHub, staging, or production.
+
 ## During work
 
 1. Keep the task within its approved scope.
@@ -78,6 +137,23 @@ If reproducible development fixtures are needed later, place sanitized fixtures
 in `sample-data/` and create an approved importer separately. No importer exists
 in the foundation phase.
 
+Computer A and Computer B each keep their own `.env`, Docker volumes, WordPress
+passwords, database, uploads, cache, and local settings. GitHub synchronizes only
+the repository source, documentation, and approved non-sensitive sample data.
+
+## Coding standards
+
+- Follow WordPress PHP coding conventions and keep Marison business logic in
+  `marison-core`, not in the theme.
+- Validate input strictly, sanitize values at boundaries, escape output at render
+  time, check capabilities, and use nonces for state-changing authenticated actions.
+- Future custom SQL must use prepared queries and controlled migrations.
+- Keep frontend JavaScript minimal; do not introduce a framework without approval.
+- Keep CSS mobile-first, theme-owned, token-based, and aligned with
+  `docs/DESIGN-SYSTEM.md`.
+- Do not add ACF, Elementor, multilingual, SEO, caching, forms, or security
+  plugins in the foundation phase.
+
 ## Directory responsibilities
 
 | Directory | Responsibility |
@@ -92,3 +168,7 @@ in the foundation phase.
 The current project phase does not include homepage implementation, visual design,
 real project content, project post types, unit management, Elementor, page
 builders, production connections, or deployment.
+
+The foundation phase also does not include Project, House Type, Unit, Lead, Branch,
+Marketing, KPR, Career, Location, Facility, multilingual, form, or public product
+feature implementation.

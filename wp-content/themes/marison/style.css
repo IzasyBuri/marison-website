@@ -1,0 +1,15 @@
+/*
+Theme Name: Marison
+Theme URI: https://marison.id/
+Author: Marison Group
+Description: Controlled Custom Block Theme foundation for Marison ID.
+Version: 0.1.0
+Requires at least: 6.6
+Requires PHP: 8.1
+Text Domain: marison
+*/
+
+/*
+ * Foundation styles are intentionally minimal. Design tokens live in theme.json;
+ * page-specific presentation will be added only in approved implementation phases.
+ */
