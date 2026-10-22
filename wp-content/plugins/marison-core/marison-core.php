@@ -14,3 +14,6 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/src/Plugin.php';
 
 \Marison\Core\Plugin::boot();
+
+register_activation_hook( __FILE__, [ '\Marison\Core\Plugin', 'activate' ] );
+register_deactivation_hook( __FILE__, [ '\Marison\Core\Plugin', 'deactivate' ] );
