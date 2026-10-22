@@ -13,6 +13,8 @@ Desktop.ini
 .env
 .env.*
 !.env.example
+/.local/
+docker-compose.override.yml
 *.pem
 *.key
 *.p12
@@ -23,6 +25,11 @@ secrets/
 /wp-admin/
 /wp-includes/
 /wp-*.php
+/index.php
+/license.txt
+/readme.html
+/xmlrpc.php
+/wp-cli.phar
 !/wp-content/
 
 # Local WordPress configuration
@@ -34,11 +41,21 @@ secrets/
 /wp-content/uploads/
 /wp-content/cache/
 /wp-content/upgrade/
+/wp-content/upgrade-temp-backup/
 /wp-content/backup*/
 /wp-content/backups/
 /wp-content/ai1wm-backups/
+/wp-content/object-cache.php
+/wp-content/advanced-cache.php
+/wp-content/index.php
+/wp-content/plugins/index.php
+/wp-content/plugins/akismet/
+/wp-content/plugins/hello.php
+/wp-content/themes/index.php
+/wp-content/themes/twentytwenty*/
 /wp-content/debug.log
 /wp-content/*.log
+/wp-content/languages/
 
 # Logs, caches, temporary files, and local databases
 *.log
@@ -64,3 +81,4 @@ coverage/
 dist/
 build/
 .phpunit.result.cache
+.phpunit.cache/

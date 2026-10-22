@@ -1,0 +1,147 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "border": {
+      "customColor": false,
+      "customRadius": false,
+      "customStyle": false,
+      "customWidth": false
+    },
+    "color": {
+      "custom": false,
+      "customDuotone": false,
+      "customGradient": false,
+      "defaultDuotone": false,
+      "defaultGradients": false,
+      "defaultPalette": false,
+      "palette": [
+        {
+          "color": "#1F6B45",
+          "name": "Primary Green",
+          "slug": "primary-green"
+        },
+        {
+          "color": "#123D2A",
+          "name": "Deep Green",
+          "slug": "deep-green"
+        },
+        {
+          "color": "#64B94F",
+          "name": "Fresh Green",
+          "slug": "fresh-green"
+        },
+        {
+          "color": "#DDEBDD",
+          "name": "Soft Sage",
+          "slug": "soft-sage"
+        },
+        {
+          "color": "#F7F4EC",
+          "name": "Warm Cream",
+          "slug": "warm-cream"
+        },
+        {
+          "color": "#20251F",
+          "name": "Charcoal",
+          "slug": "charcoal"
+        },
+        {
+          "color": "#6E756D",
+          "name": "Muted Gray",
+          "slug": "muted-gray"
+        },
+        {
+          "color": "#FFFFFF",
+          "name": "White",
+          "slug": "white"
+        }
+      ]
+    },
+    "layout": {
+      "contentSize": "720px",
+      "wideSize": "1200px"
+    },
+    "spacing": {
+      "customSpacingSize": false,
+      "spacingSizes": [
+        {
+          "name": "Small",
+          "size": "0.75rem",
+          "slug": "small"
+        },
+        {
+          "name": "Medium",
+          "size": "1.5rem",
+          "slug": "medium"
+        },
+        {
+          "name": "Large",
+          "size": "3rem",
+          "slug": "large"
+        },
+        {
+          "name": "Extra Large",
+          "size": "5rem",
+          "slug": "x-large"
+        }
+      ],
+      "units": ["px", "rem", "%", "vw"]
+    },
+    "typography": {
+      "customFontSize": false,
+      "dropCap": false,
+      "fontFamilies": [
+        {
+          "fontFamily": "Plus Jakarta Sans, Inter, ui-sans-serif, system-ui, sans-serif",
+          "name": "Marison Sans",
+          "slug": "marison-sans"
+        }
+      ],
+      "fontSizes": [
+        {
+          "name": "Small",
+          "size": "0.875rem",
+          "slug": "small"
+        },
+        {
+          "name": "Medium",
+          "size": "1rem",
+          "slug": "medium"
+        },
+        {
+          "name": "Large",
+          "size": "1.5rem",
+          "slug": "large"
+        },
+        {
+          "name": "Extra Large",
+          "size": "clamp(2rem, 5vw, 3.5rem)",
+          "slug": "x-large"
+        }
+      ],
+      "lineHeight": false
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "var:preset|color|white",
+      "text": "var:preset|color|charcoal"
+    },
+    "spacing": {
+      "blockGap": "var:preset|spacing|medium"
+    },
+    "typography": {
+      "fontFamily": "var:preset|font-family|marison-sans",
+      "fontSize": "var:preset|font-size|medium"
+    },
+    "elements": {
+      "link": {
+        "color": {
+          "text": "var:preset|color|primary-green"
+        }
+      }
+    }
+  }
+}
