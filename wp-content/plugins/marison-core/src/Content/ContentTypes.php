@@ -130,5 +130,33 @@ final class ContentTypes {
 				'map_meta_cap' => true,
 			]
 		);
+
+		register_post_type(
+			'marison_kpr_scheme',
+			[
+				'labels' => [
+					'name' => 'KPR Schemes',
+					'singular_name' => 'KPR Scheme',
+					'menu_name' => 'KPR Schemes',
+					'add_new_item' => 'Tambah KPR Scheme',
+					'edit_item' => 'Edit KPR Scheme',
+					'new_item' => 'KPR Scheme Baru',
+					'search_items' => 'Cari KPR Scheme',
+					'not_found' => 'KPR Scheme belum tersedia.',
+				],
+				'public' => false,
+				'publicly_queryable' => false,
+				'exclude_from_search' => true,
+				'show_ui' => true,
+				'show_in_menu' => false,
+				'show_in_rest' => false,
+				'show_in_nav_menus' => false,
+				'rewrite' => false,
+				'has_archive' => false,
+				'supports' => [ 'title', 'revisions' ],
+				'capability_type' => [ 'marison_kpr_scheme', 'marison_kpr_schemes' ],
+				'map_meta_cap' => true,
+			]
+		);
 	}
 }

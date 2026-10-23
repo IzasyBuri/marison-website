@@ -26,12 +26,13 @@ final class Capabilities {
 	}
 
 	private static function all(): array {
-		$capabilities = [ 'manage_marison_inventory', 'manage_marison_leads', 'manage_marison_settings' ];
+		$capabilities = [ 'manage_marison_inventory', 'manage_marison_leads', 'manage_marison_settings', 'manage_marison_kpr' ];
 		$types = [
 			'marison_project' => 'marison_projects',
 			'marison_house_type' => 'marison_house_types',
 			'marison_branch' => 'marison_branches',
 			'marison_marketing' => 'marison_marketing_records',
+			'marison_kpr_scheme' => 'marison_kpr_schemes',
 		];
 		$actions = [
 			'edit',

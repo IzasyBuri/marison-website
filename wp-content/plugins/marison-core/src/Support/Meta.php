@@ -50,6 +50,13 @@ final class Meta {
 
 		self::register_meta( 'marison_branch', self::BRANCH_WHATSAPP, 'string', [ Validation::class, 'sanitize_contact_number' ] );
 		self::register_meta( 'marison_branch', self::BRANCH_TELEPHONE, 'string', [ Validation::class, 'sanitize_contact_number' ] );
+
+		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_state', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_state' ] );
+		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_annual_rate', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_rate' ] );
+		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_tenure_months', 'array', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_tenures' ], [] );
+		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_default_dp_percent', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_default_dp' ] );
+		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_effective_date', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_effective_date' ] );
+		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_disclaimer', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_disclaimer' ] );
 	}
 
 	private static function register_meta( string $post_type, string $key, string $type, callable $sanitize, $default = null ): void {
