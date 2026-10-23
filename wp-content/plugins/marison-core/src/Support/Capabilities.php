@@ -26,7 +26,7 @@ final class Capabilities {
 	}
 
 	private static function all(): array {
-		$capabilities = [ 'manage_marison_inventory' ];
+		$capabilities = [ 'manage_marison_inventory', 'manage_marison_leads', 'manage_marison_settings' ];
 		$types = [
 			'marison_project' => 'marison_projects',
 			'marison_house_type' => 'marison_house_types',

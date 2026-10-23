@@ -175,8 +175,23 @@ check automatically; administrators do not execute raw SQL. Local tests may crea
 temporary synthetic Unit rows, but must delete them before leaving the workspace.
 
 It does not include frontend Unit presentation, public Unit routes, CSV import/export,
-siteplan data, pricing, Leads, KPR, Career, multilingual integration, forms,
+siteplan data, pricing, KPR, Career, multilingual integration, frontend forms,
 production connections, or deployment.
+
+## Lead and contact foundation phase
+
+The approved Lead/contact foundation adds a private prefixed Lead table, restricted
+Lead administration, consent-aware internal submission, Project → Branch contact
+resolution, and empty-by-default corporate fallback settings. WhatsApp URL generation
+does not create a Lead; only an intentional consent-bearing submission does.
+
+Lead retention duration remains **TO BE DEFINED before launch**. No automatic cleanup
+runs locally or in development. WordPress privacy requests are commonly driven by an
+email identifier, while this V1 Lead model stores WhatsApp/telephone contact values.
+Phone-only Leads may therefore require an authorized internal lookup/deletion workflow.
+This operational limitation must be resolved before launch; do not add a new personal
+identifier merely to work around it. Local tests must remove all synthetic Leads
+before handoff.
 
 Location V1 enforces one three-level hierarchy and only allows Project assignment
 to a depth-three City / Regency term. It does not store a separate semantic level
