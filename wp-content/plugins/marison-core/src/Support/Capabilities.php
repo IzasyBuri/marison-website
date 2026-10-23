@@ -26,6 +26,7 @@ final class Capabilities {
 	}
 
 	private static function all(): array {
+		$capabilities = [ 'manage_marison_inventory' ];
 		$types = [
 			'marison_project' => 'marison_projects',
 			'marison_house_type' => 'marison_house_types',
@@ -45,8 +46,6 @@ final class Capabilities {
 			'edit_private',
 			'edit_published',
 		];
-		$capabilities = [];
-
 		foreach ( $types as $singular => $plural ) {
 			$capabilities[] = 'edit_' . $plural;
 			$capabilities[] = 'read_' . $plural;

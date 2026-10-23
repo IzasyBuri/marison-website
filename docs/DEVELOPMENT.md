@@ -163,15 +163,20 @@ the repository source, documentation, and approved non-sensitive sample data.
 | `wp-content/plugins/marison-core/` | Future Marison business-data plugin |
 | `sample-data/` | Future non-sensitive reproducible development data |
 
-## Content-model foundation phase
+## Unit inventory foundation phase
 
-The current implementation phase includes only the first managed content-model group:
-Project, Project Status, House Type, Branch Office, Marketing Person / Team, Location,
-and Facility inside `marison-core`.
+The current implementation phase includes the approved content-model foundation plus
+the first managed Unit inventory foundation inside `marison-core`: a prefixed custom
+Unit table, idempotent schema upgrade check, repository/data-access layer, explicit
+availability source mode, and server-rendered admin inventory management.
 
-It does not include homepage implementation, visual product design, Housing Unit
-tables, Leads, KPR, Career, multilingual integration, forms, public REST routes,
-imports/exports, production connections, or deployment.
+Unit data survives plugin deactivation and uninstall. Normal upgrades run the schema
+check automatically; administrators do not execute raw SQL. Local tests may create
+temporary synthetic Unit rows, but must delete them before leaving the workspace.
+
+It does not include frontend Unit presentation, public Unit routes, CSV import/export,
+siteplan data, pricing, Leads, KPR, Career, multilingual integration, forms,
+production connections, or deployment.
 
 Location V1 enforces one three-level hierarchy and only allows Project assignment
 to a depth-three City / Regency term. It does not store a separate semantic level

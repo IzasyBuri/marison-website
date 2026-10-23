@@ -29,6 +29,7 @@ final class MetaBoxes {
 		$progress = get_post_meta( $post->ID, Meta::PROJECT_PROGRESS, true );
 		$progress_description = get_post_meta( $post->ID, Meta::PROJECT_PROGRESS_DESCRIPTION, true );
 		$address = get_post_meta( $post->ID, Meta::PROJECT_ADDRESS, true );
+		$availability_mode = get_post_meta( $post->ID, Meta::PROJECT_AVAILABILITY_MODE, true );
 		?>
 		<p><label for="marison_project_status"><strong>Status Project</strong></label></p>
 		<select class="widefat" id="marison_project_status" name="marison_project_status">
@@ -47,6 +48,27 @@ final class MetaBoxes {
 
 		<p><label for="marison_project_address"><strong>Alamat Project</strong></label></p>
 		<textarea class="widefat" id="marison_project_address" name="marison_project_address" rows="3"><?php echo esc_textarea( $address ); ?></textarea>
+
+		<hr />
+		<p><label for="marison_project_availability_mode"><strong>Availability Source</strong></label></p>
+		<select class="widefat" id="marison_project_availability_mode" name="marison_project_availability_mode">
+			<option value="">Pilih sumber availability sebelum publish</option>
+			<option value="manual" <?php selected( $availability_mode, 'manual' ); ?>>Manual fallback</option>
+			<option value="units" <?php selected( $availability_mode, 'units' ); ?>>Unit Inventory</option>
+		</select>
+		<p class="description">Membuat Unit tidak otomatis mengubah mode. Manual fallback tetap tersimpan saat Unit Inventory menjadi sumber aktif.</p>
+		<?php self::availability_count_field( 'marison_project_manual_available', 'Manual — Tersedia', Meta::PROJECT_MANUAL_AVAILABLE, $post->ID ); ?>
+		<?php self::availability_count_field( 'marison_project_manual_booked', 'Manual — Terbooking', Meta::PROJECT_MANUAL_BOOKED, $post->ID ); ?>
+		<?php self::availability_count_field( 'marison_project_manual_sold', 'Manual — Terjual', Meta::PROJECT_MANUAL_SOLD, $post->ID ); ?>
+		<p class="description">Isi semua tiga angka manual dengan bilangan bulat tidak negatif saat Manual fallback digunakan. Angka ini diabaikan dalam mode Unit Inventory.</p>
+		<?php
+	}
+
+	private static function availability_count_field( string $name, string $label, string $meta_key, int $post_id ): void {
+		$value = get_post_meta( $post_id, $meta_key, true );
+		?>
+		<p><label for="<?php echo esc_attr( $name ); ?>"><strong><?php echo esc_html( $label ); ?></strong></label></p>
+		<input class="small-text" id="<?php echo esc_attr( $name ); ?>" name="<?php echo esc_attr( $name ); ?>" type="number" min="0" step="1" value="<?php echo esc_attr( $value ); ?>" />
 		<?php
 	}
 
@@ -236,6 +258,19 @@ final class MetaBoxes {
 		self::save_or_delete( $post_id, Meta::PROJECT_PROGRESS, $progress, '' !== (string) ( $_POST['marison_project_progress'] ?? '' ) && '' === $progress ? 'Progress harus berupa angka 0 sampai 100.' : '' );
 		self::save_text( $post_id, Meta::PROJECT_PROGRESS_DESCRIPTION, 'marison_project_progress_description', true );
 		self::save_text( $post_id, Meta::PROJECT_ADDRESS, 'marison_project_address', true );
+
+		$mode = isset( $_POST['marison_project_availability_mode'] ) ? Validation::sanitize_availability_mode( wp_unslash( $_POST['marison_project_availability_mode'] ) ) : '';
+		self::save_or_delete( $post_id, Meta::PROJECT_AVAILABILITY_MODE, $mode, '' !== (string) ( $_POST['marison_project_availability_mode'] ?? '' ) && '' === $mode ? 'Availability Source tidak valid.' : '' );
+		$manual_fields = [
+			Meta::PROJECT_MANUAL_AVAILABLE => 'marison_project_manual_available',
+			Meta::PROJECT_MANUAL_BOOKED => 'marison_project_manual_booked',
+			Meta::PROJECT_MANUAL_SOLD => 'marison_project_manual_sold',
+		];
+		foreach ( $manual_fields as $meta_key => $input_name ) {
+			$raw = isset( $_POST[ $input_name ] ) ? wp_unslash( $_POST[ $input_name ] ) : '';
+			$value = Validation::sanitize_non_negative_integer( $raw );
+			self::save_or_delete( $post_id, $meta_key, $value, '' !== (string) $raw && '' === $value ? 'Manual availability harus berupa bilangan bulat tidak negatif.' : '' );
+		}
 
 		$location_id = isset( $_POST['marison_project_location'] ) ? absint( $_POST['marison_project_location'] ) : 0;
 		if ( $location_id && Validation::is_valid_location( $location_id ) ) {

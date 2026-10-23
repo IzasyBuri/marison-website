@@ -9,13 +9,21 @@ namespace Marison\Core\Support;
 
 defined( 'ABSPATH' ) || exit;
 
+use Marison\Core\Inventory\UnitRepository;
+
 final class Validation {
 	public const PROJECT_STATUSES = [ 'upcoming', 'ongoing', 'completed' ];
+	public const AVAILABILITY_MODES = [ 'manual', 'units' ];
 	private static bool $enforcing_integrity = false;
 
 	public static function sanitize_project_status( $value ): string {
 		$value = sanitize_key( (string) $value );
 		return in_array( $value, self::PROJECT_STATUSES, true ) ? $value : '';
+	}
+
+	public static function sanitize_availability_mode( $value ): string {
+		$value = sanitize_key( (string) $value );
+		return in_array( $value, self::AVAILABILITY_MODES, true ) ? $value : '';
 	}
 
 	public static function sanitize_non_negative_number( $value ) {
@@ -106,6 +114,10 @@ final class Validation {
 		if ( ! in_array( $status, self::PROJECT_STATUSES, true ) ) {
 			$errors[] = 'Project Status wajib dipilih dari Akan Datang, Sedang Berjalan, atau Selesai.';
 		}
+		$availability_mode = get_post_meta( $post_id, Meta::PROJECT_AVAILABILITY_MODE, true );
+		if ( ! in_array( $availability_mode, self::AVAILABILITY_MODES, true ) ) {
+			$errors[] = 'Availability Source wajib dipilih dari Manual atau Unit Inventory.';
+		}
 		if ( ! self::is_valid_post( $branch_id, 'marison_branch', true ) ) {
 			$errors[] = 'Project wajib memiliki satu Primary Branch Office yang aktif.';
 		} elseif ( ! self::is_valid_contact_number( get_post_meta( $branch_id, Meta::BRANCH_WHATSAPP, true ) ) ) {
@@ -129,6 +141,18 @@ final class Validation {
 		return ! self::is_valid_contact_number( get_post_meta( $post_id, Meta::BRANCH_WHATSAPP, true ) )
 			? [ 'Branch Office wajib memiliki Primary Public WhatsApp.' ]
 			: [];
+	}
+
+	public static function prevent_delete_with_units( int $post_id, \WP_Post $post ): void {
+		$count = 'marison_project' === $post->post_type
+			? UnitRepository::count_by_project( $post_id )
+			: ( 'marison_house_type' === $post->post_type ? UnitRepository::count_by_house_type( $post_id ) : 0 );
+		if ( $count <= 0 ) {
+			return;
+		}
+
+		$label = 'marison_project' === $post->post_type ? 'Project' : 'House Type';
+		wp_die( esc_html( sprintf( '%s tidak dapat dihapus permanen karena masih direferensikan oleh %d Unit. Hapus Unit secara eksplisit terlebih dahulu.', $label, $count ) ) );
 	}
 
 	public static function enforce_published_integrity( int $post_id, string $post_type ): array {
@@ -160,7 +184,7 @@ final class Validation {
 		}
 
 		$gated_keys = [
-			'marison_project' => [ Meta::PROJECT_STATUS, Meta::PROJECT_PRIMARY_BRANCH ],
+			'marison_project' => [ Meta::PROJECT_STATUS, Meta::PROJECT_PRIMARY_BRANCH, Meta::PROJECT_AVAILABILITY_MODE ],
 			'marison_house_type' => [ Meta::HOUSE_TYPE_PROJECT ],
 		];
 		if ( isset( $gated_keys[ $post_type ] ) && in_array( $meta_key, $gated_keys[ $post_type ], true ) ) {

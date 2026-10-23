@@ -2,8 +2,8 @@
 /**
  * Marison Core bootstrap.
  *
- * This file intentionally contains no business entities, database schema,
- * public REST routes, or activation-time data changes.
+ * This file contains Marison business entities, schema lifecycle hooks, and
+ * admin/business logic, but no public REST routes.
  *
  * @package MarisonCore
  */
@@ -14,7 +14,12 @@ defined( 'ABSPATH' ) || exit;
 
 require_once __DIR__ . '/Admin/Menus.php';
 require_once __DIR__ . '/Admin/MetaBoxes.php';
+require_once __DIR__ . '/Admin/UnitInventory.php';
 require_once __DIR__ . '/Content/ContentTypes.php';
+require_once __DIR__ . '/Inventory/Schema.php';
+require_once __DIR__ . '/Inventory/Availability.php';
+require_once __DIR__ . '/Inventory/UnitRules.php';
+require_once __DIR__ . '/Inventory/UnitRepository.php';
 require_once __DIR__ . '/Reference/Taxonomies.php';
 require_once __DIR__ . '/Support/Capabilities.php';
 require_once __DIR__ . '/Support/Meta.php';
@@ -22,7 +27,9 @@ require_once __DIR__ . '/Support/Validation.php';
 
 use Marison\Core\Admin\Menus;
 use Marison\Core\Admin\MetaBoxes;
+use Marison\Core\Admin\UnitInventory;
 use Marison\Core\Content\ContentTypes;
+use Marison\Core\Inventory\Schema;
 use Marison\Core\Reference\Taxonomies;
 use Marison\Core\Support\Capabilities;
 use Marison\Core\Support\Meta;
@@ -47,6 +54,7 @@ final class Plugin {
 	public static function activate(): void {
 		ContentTypes::register();
 		Taxonomies::register();
+		Schema::migrate();
 		Capabilities::ensure_admin_capabilities( true );
 		flush_rewrite_rules();
 	}
@@ -56,15 +64,21 @@ final class Plugin {
 	}
 
 	private function __construct() {
+		add_action( 'init', [ Schema::class, 'maybe_upgrade' ], 1 );
 		add_action( 'init', [ ContentTypes::class, 'register' ], 5 );
 		add_action( 'init', [ Taxonomies::class, 'register' ], 5 );
 		add_action( 'init', [ Meta::class, 'register' ], 20 );
 		add_action( 'init', [ Capabilities::class, 'ensure_admin_capabilities' ], 0 );
 		add_action( 'admin_init', [ Capabilities::class, 'ensure_admin_capabilities' ] );
 		add_action( 'admin_menu', [ Menus::class, 'register' ] );
+		add_action( 'admin_menu', [ UnitInventory::class, 'register' ] );
+		add_action( 'admin_post_marison_save_unit', [ UnitInventory::class, 'handle_save' ] );
+		add_action( 'admin_post_marison_delete_unit', [ UnitInventory::class, 'handle_delete' ] );
+		add_action( 'admin_post_marison_bulk_unit_status', [ UnitInventory::class, 'handle_bulk_status' ] );
 		add_action( 'add_meta_boxes', [ MetaBoxes::class, 'register' ] );
 		add_action( 'save_post', [ MetaBoxes::class, 'save' ], 20, 3 );
 		add_action( 'transition_post_status', [ Validation::class, 'handle_trash_relationships' ], 10, 3 );
+		add_action( 'before_delete_post', [ Validation::class, 'prevent_delete_with_units' ], 10, 2 );
 		add_action( 'added_post_meta', [ Validation::class, 'handle_post_meta_change' ], 10, 4 );
 		add_action( 'updated_post_meta', [ Validation::class, 'handle_post_meta_change' ], 10, 4 );
 		add_action( 'deleted_post_meta', [ Validation::class, 'handle_post_meta_change' ], 10, 4 );
