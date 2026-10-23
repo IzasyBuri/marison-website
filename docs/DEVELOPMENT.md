@@ -216,6 +216,14 @@ permanent business rule. If a future approved Scheme requires greater precision,
 domain/storage boundary must evolve without changing the percentage-point meaning of
 existing values.
 
+## Frontend design-system foundation phase
+
+The Marison Block Theme keeps design tokens in `theme.json` and semantic interaction/
+component behavior in the small theme stylesheet. Foundation patterns may demonstrate
+tokens, statuses, forms, cards, and image treatments locally, but are not production
+Homepage/Directory/Project pages or a public style-guide route. Validate theme changes
+at desktop and mobile widths, including focus, contrast, reduced motion, and overflow.
+
 ## Multilingual foundation phase
 
 The local multilingual dependency is Polylang Free `3.9.1`, installed through the
