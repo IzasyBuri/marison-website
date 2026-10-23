@@ -215,3 +215,21 @@ The current V1 two-decimal rate normalization is an implementation convention, n
 permanent business rule. If a future approved Scheme requires greater precision, the
 domain/storage boundary must evolve without changing the percentage-point meaning of
 existing values.
+
+## Multilingual foundation phase
+
+The local multilingual dependency is Polylang Free `3.9.1`, installed through the
+normal WordPress plugin workflow. It is intentionally ignored at
+`wp-content/plugins/polylang/` and is not committed or copied into Marison source.
+
+Configure Indonesian (`id`) as the default language and English (`en`) as the
+secondary language under `/en/`. Each local/staging environment must install and
+activate the approved free plugin independently; Git synchronizes only Marison source
+and documentation, not third-party plugin files or language/content database state.
+
+Polylang absence must leave Indonesian business data operable. Translation helpers
+return safe unavailable/default-language states. Unit, Lead, and KPR structured data
+remain language-independent; no translated custom tables are created.
+
+House Type featured-media synchronization is acceptable for V1 but is not a permanent
+business rule; language-specific media may be supported only after explicit approval.
