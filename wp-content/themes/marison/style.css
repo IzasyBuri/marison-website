@@ -13,3 +13,58 @@ Text Domain: marison
  * Foundation styles are intentionally minimal. Design tokens live in theme.json;
  * page-specific presentation will be added only in approved implementation phases.
  */
+
+:where(a, button, input, select, textarea):focus-visible {
+	outline: 3px solid var(--wp--preset--color--deep-green);
+	outline-offset: 3px;
+}
+
+.marison-surface--white { background: var(--wp--preset--color--white); }
+.marison-surface--cream { background: var(--wp--preset--color--warm-cream); }
+.marison-surface--sage { background: var(--wp--preset--color--soft-sage); }
+.marison-surface--dark { background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); }
+
+.marison-card {
+	background: var(--wp--preset--color--white);
+	border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent);
+	border-radius: var(--wp--preset--spacing--small);
+	overflow: hidden;
+}
+
+.marison-status {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--wp--preset--spacing--x-small);
+	border: 1px solid currentColor;
+	border-radius: 999px;
+	padding: 0.25rem 0.625rem;
+	font-size: var(--wp--preset--font-size--caption);
+	font-weight: 600;
+}
+
+.marison-status::before { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: currentColor; content: ""; }
+.marison-status--project-upcoming { color: #51427a; background: #f1eefa; }
+.marison-status--project-ongoing { color: #23615d; background: #e8f3f0; }
+.marison-status--project-completed { color: #59615b; background: #eef0ed; }
+.marison-status--unit-available { color: #17643e; background: #e8f4ec; }
+.marison-status--unit-booked { color: #8a4a00; background: #fff4dd; }
+.marison-status--unit-sold { color: #59615b; background: #eef0ed; }
+
+.marison-field { display: grid; gap: var(--wp--preset--spacing--x-small); }
+.marison-field > label { font-weight: 600; }
+.marison-field :where(input, select, textarea) { min-height: 2.75rem; border: 1px solid #59615b; border-radius: var(--wp--preset--spacing--x-small); padding: 0.625rem 0.75rem; }
+.marison-field :where(input, select, textarea):disabled { color: #707770; background: #eef0ed; }
+.marison-field.is-error :where(input, select, textarea) { border-color: #a61b1b; }
+.marison-field__error { color: #a61b1b; font-size: var(--wp--preset--font-size--small); }
+.marison-field__help { color: #4e554f; font-size: var(--wp--preset--font-size--small); }
+
+.marison-image--hero { aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--wp--preset--spacing--medium); }
+.marison-image--card { aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--wp--preset--spacing--small); }
+.marison-image--editorial { aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--wp--preset--spacing--small); }
+
+.marison-foundation-grid { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.marison-language-switcher { display: inline-flex; gap: var(--wp--preset--spacing--x-small); align-items: center; font-size: var(--wp--preset--font-size--small); }
+
+@media (max-width: 781px) { .marison-foundation-grid { grid-template-columns: 1fr; } .marison-image--hero { border-radius: var(--wp--preset--spacing--small); } }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }

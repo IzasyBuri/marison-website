@@ -4,10 +4,28 @@
   "settings": {
     "appearanceTools": true,
     "border": {
+      "radius": true,
       "customColor": false,
       "customRadius": false,
       "customStyle": false,
-      "customWidth": false
+      "customWidth": false,
+      "radiusSizes": [
+        {
+          "name": "Small",
+          "size": "8px",
+          "slug": "small"
+        },
+        {
+          "name": "Medium",
+          "size": "12px",
+          "slug": "medium"
+        },
+        {
+          "name": "Large",
+          "size": "20px",
+          "slug": "large"
+        }
+      ]
     },
     "color": {
       "custom": false,
@@ -67,6 +85,11 @@
       "customSpacingSize": false,
       "spacingSizes": [
         {
+          "name": "Extra Small",
+          "size": "0.25rem",
+          "slug": "x-small"
+        },
+        {
           "name": "Small",
           "size": "0.75rem",
           "slug": "small"
@@ -85,6 +108,11 @@
           "name": "Extra Large",
           "size": "5rem",
           "slug": "x-large"
+        },
+        {
+          "name": "Extra Extra Large",
+          "size": "8rem",
+          "slug": "xx-large"
         }
       ],
       "units": ["px", "rem", "%", "vw"]
@@ -101,6 +129,11 @@
       ],
       "fontSizes": [
         {
+          "name": "Caption",
+          "size": "0.8125rem",
+          "slug": "caption"
+        },
+        {
           "name": "Small",
           "size": "0.875rem",
           "slug": "small"
@@ -111,9 +144,34 @@
           "slug": "medium"
         },
         {
+          "name": "Body",
+          "size": "1.0625rem",
+          "slug": "body"
+        },
+        {
           "name": "Large",
           "size": "1.5rem",
           "slug": "large"
+        },
+        {
+          "name": "Heading 3",
+          "size": "clamp(1.375rem, 2vw, 2rem)",
+          "slug": "h3"
+        },
+        {
+          "name": "Heading 2",
+          "size": "clamp(1.75rem, 3vw, 2.75rem)",
+          "slug": "h2"
+        },
+        {
+          "name": "Heading 1",
+          "size": "clamp(2rem, 4vw, 3.5rem)",
+          "slug": "h1"
+        },
+        {
+          "name": "Display",
+          "size": "clamp(2.25rem, 5vw, 4.5rem)",
+          "slug": "display"
         },
         {
           "name": "Extra Large",
@@ -126,7 +184,7 @@
   },
   "styles": {
     "color": {
-      "background": "var:preset|color|white",
+      "background": "var:preset|color|warm-cream",
       "text": "var:preset|color|charcoal"
     },
     "spacing": {
@@ -134,12 +192,36 @@
     },
     "typography": {
       "fontFamily": "var:preset|font-family|marison-sans",
-      "fontSize": "var:preset|font-size|medium"
+      "fontSize": "var:preset|font-size|body",
+      "lineHeight": "1.6"
     },
     "elements": {
+      "button": {
+        "border": {
+          "radius": "var:preset|spacing|small"
+        },
+        "color": {
+          "background": "var:preset|color|primary-green",
+          "text": "var:preset|color|white"
+        },
+        "spacing": {
+          "padding": {
+            "bottom": "var:preset|spacing|small",
+            "left": "var:preset|spacing|medium",
+            "right": "var:preset|spacing|medium",
+            "top": "var:preset|spacing|small"
+          }
+        },
+        "typography": {
+          "fontWeight": "600"
+        }
+      },
       "link": {
         "color": {
           "text": "var:preset|color|primary-green"
+        },
+        "typography": {
+          "textDecoration": "underline"
         }
       }
     }
