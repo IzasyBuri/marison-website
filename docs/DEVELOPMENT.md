@@ -197,3 +197,21 @@ Location V1 enforces one three-level hierarchy and only allows Project assignmen
 to a depth-three City / Regency term. It does not store a separate semantic level
 field or verify that a term name is actually a Country, Province, City, or Regency;
 staff should follow the displayed Country → Province → City / Regency guidance.
+
+## KPR Scheme foundation phase
+
+KPR Scheme is managed as a non-public CPT with typed metadata and one explicit
+Public Default option pointer. The foundation stores percentage-point annual rates,
+normalized integer-month tenure options, `default_dp_percent`, date-only effective
+dates, and disclaimer text.
+
+The calculator boundary validates inputs but returns `NOT_IMPLEMENTED`; it does not
+calculate installments or imply financing approval. Before calculation work begins,
+Marison must approve the interest method/formula, rate treatment, rounding, DP
+semantics, tenure interpretation, included/excluded fees, subsidy/eligibility rules,
+and final disclaimer/legal wording.
+
+The current V1 two-decimal rate normalization is an implementation convention, not a
+permanent business rule. If a future approved Scheme requires greater precision, the
+domain/storage boundary must evolve without changing the percentage-point meaning of
+existing values.
