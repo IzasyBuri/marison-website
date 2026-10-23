@@ -50,6 +50,7 @@ secrets/
 /wp-content/index.php
 /wp-content/plugins/index.php
 /wp-content/plugins/akismet/
+/wp-content/plugins/polylang/
 /wp-content/plugins/hello.php
 /wp-content/themes/index.php
 /wp-content/themes/twentytwenty*/

@@ -20,6 +20,8 @@ require_once __DIR__ . '/Settings/CorporateSettings.php';
 require_once __DIR__ . '/KPR/SchemeRules.php';
 require_once __DIR__ . '/KPR/PublicDefault.php';
 require_once __DIR__ . '/KPR/Calculator.php';
+require_once __DIR__ . '/Multilingual/Polylang.php';
+require_once __DIR__ . '/Multilingual/Resolver.php';
 require_once __DIR__ . '/Admin/KPRSchemes.php';
 require_once __DIR__ . '/Leads/LeadRules.php';
 require_once __DIR__ . '/Leads/LeadRepository.php';
@@ -43,6 +45,7 @@ use Marison\Core\Admin\Menus;
 use Marison\Core\Admin\MetaBoxes;
 use Marison\Core\Settings\CorporateSettings;
 use Marison\Core\KPR\PublicDefault;
+use Marison\Core\Multilingual\Polylang;
 use Marison\Core\Admin\KPRSchemes;
 use Marison\Core\Admin\Leads;
 use Marison\Core\Privacy\LeadPrivacy;
@@ -83,6 +86,7 @@ final class Plugin {
 	}
 
 	private function __construct() {
+		Polylang::register();
 		add_action( 'init', [ Schema::class, 'maybe_upgrade' ], 1 );
 		add_action( 'init', [ ContentTypes::class, 'register' ], 5 );
 		add_action( 'init', [ Taxonomies::class, 'register' ], 5 );
