@@ -773,30 +773,31 @@ tanpa mengubah reusable term model.
 - Tidak ada `/id/` pada V1.
 - Translation bukan website kedua yang berdiri sendiri.
 - Shared structured data hanya memiliki satu source.
+- V1 harus dapat dikembangkan dan dioperasikan tanpa paid multilingual plugin.
+- Polylang Free adalah tooling multilingual V1 yang disetujui; Polylang Pro tidak
+  menjadi requirement atau procurement dependency.
 
 ### 20.2 Evaluated solutions
 
 | Solution | Strengths | Trade-offs |
 |---|---|---|
-| Polylang Pro | Linked WordPress translations, multilingual CPT/taxonomy, Site Editor/navigation workflow, shared/translated field synchronization, URL-slug options, dan future REST/multilingual integration boundary | Commercial license/procurement; custom table perlu adapter dan field policy |
-| WPML | Translation workflow dan configuration surface kuat untuk CPT/taxonomy/custom fields | Commercial dependency dan admin surface lebih besar; tier/license harus dipilih |
-| Custom bilingual layer | Kontrol penuh | Harus membangun relation, URL, editor, hreflang, dan fallback sendiri; tidak dipilih |
+| Polylang Free | Linked WordPress translations, CPT/taxonomy language relationships, language root `/en/`, dan free ecosystem fit | Free-version URL-slug/navigation limitations; custom tables perlu tetap language-neutral; House Type/non-public integration perlu explicit adapter/registration |
+| TranslatePress Free | Free visual translation workflow untuk selected rendered strings | Kurang natural untuk linked CPT/taxonomy records, non-public House Type translation, dan shared structured business data; bukan baseline V1 |
+| Paid multilingual plugin | Dapat menambah Site Editor/slug/workflow features | Bertentangan dengan owner requirement: tidak boleh menjadi V1 operational dependency |
+| Custom bilingual layer | Kontrol penuh | Harus membangun relation, URL, editor, hreflang, fallback, dan synchronization sendiri; tidak dipilih |
 
 ### 20.3 Recommendation
 
-**Primary production architecture: Polylang Pro**, karena Controlled Block Theme/Site
-Editor workflow membutuhkan multilingual CPT/taxonomy, linked navigation, URL-slug
-options, content synchronization, dan future REST/multilingual integration yang lebih
-kuat. Polylang Pro adalah desain target, bukan persetujuan pembelian.
+**Recommendation: Polylang Free + standard WordPress i18n**, karena memenuhi zero
+license-cost requirement, linked Indonesian/English content model, CPT/taxonomy
+relationships, dan language-neutral custom tables tanpa membangun proprietary
+translation storage. Polylang Pro, WPML, TranslatePress Premium, paid translation
+APIs, dan other paid multilingual dependencies bukan requirement V1.
 
-**Fallback: WPML**, bila workflow translation terpadu, vendor support, atau feature
-coverage lebih sesuai setelah evaluasi license tier.
-
-Tidak ada plugin di-install oleh pekerjaan ini. Pembelian Polylang Pro adalah
-**PRE-MULTILINGUAL-IMPLEMENTATION PROCUREMENT DECISION**. Procurement bukan
-architecture blocker. Namun, bila workflow implementation yang dipilih memerlukan
-feature Pro, license approval menjadi blocker untuk multilingual production
-implementation.
+Free-version tradeoffs are accepted: translated English URL bases/slugs may retain
+shared CPT/taxonomy base slugs, and multilingual navigation may use a small
+server-rendered theme integration rather than paid Site Editor multilingual features.
+No plugin is installed by this documentation revision.
 
 ### 20.4 Field policy
 
@@ -816,8 +817,15 @@ implementation.
 Unit dan Lead custom tables tidak digandakan per bahasa. English Project membaca
 Unit yang sama, dan Unit tetap merujuk canonical House Type identity. Presentation
 English dapat resolve linked English House Type content bila tersedia.
-`marison-core` menjadi adapter bila multilingual plugin tidak
-memahami custom table; adapter tidak menyalin rows.
+`marison-core` menjadi adapter bila Polylang Free tidak memahami custom table; adapter
+tidak menyalin rows. House Type tetap non-public; bila editorial translation diperlukan,
+core secara eksplisit mendaftarkan/integrasikan CPT dengan supported Polylang hooks,
+bukan membuat object public hanya agar translation tooling dapat menemukannya.
+
+KPR Scheme title/name dan disclaimer dapat diterjemahkan bila diperlukan. Rate,
+tenures, default DP, state, effective date, Public Default pointer, Unit inventory,
+Lead records, Project relationships, Branch contacts, and other structured values
+remain shared and are never maintained as independent language copies.
 
 ### 20.5 Integrity
 
@@ -826,6 +834,27 @@ memahami custom table; adapter tidak menyalin rows.
 - Jika belum tersedia, fallback jujur ke Indonesian context, bukan English Home kosong.
 - Slug, canonical, hreflang, dan sitemap berasal dari multilingual integration.
 - Translation relationship tidak boleh hilang karena theme change.
+
+### 20.6 Free-compatible navigation
+
+Controlled Block Theme tidak bergantung pada full multilingual Site Editor workflow
+Polylang Pro. Header dan layout navigasi tetap dimiliki theme. Polylang Free Language
+Switcher block dapat digunakan di dalam Navigation block bila sesuai, bersama
+supported WordPress/Polylang Free language-aware links and content.
+
+Komponen server-rendered navigation resolver hanya diperkenalkan bila implementasi
+nyata membuktikan kebutuhan tersebut; V1 tidak membangun infrastructure navigasi
+custom secara prematur. Tidak ada SPA, fork Polylang, atau custom translation
+database. Staff tetap memakai workflow admin yang tersedia tanpa menjadikan fitur
+multilingual Site Editor premium sebagai requirement.
+
+### 20.7 Plugin absence/failure
+
+Jika Polylang Free dinonaktifkan atau belum tersedia, Indonesian canonical site tetap
+operable dan shared business data tetap tersimpan. Translation switcher, linked
+translation lookup, dan translated navigation menjadi unavailable secara graceful;
+core/theme tidak boleh fatal-error. Unit, Lead, KPR numeric data, relationships, dan
+contact values tidak bergantung pada Polylang untuk survival.
 
 ---
 
@@ -1387,8 +1416,8 @@ security smoke test, contact routing, no production overwrite, release/rollback 
 | Dependency | Purpose | Required? | Alternative | Risk | Approval status |
 |---|---|---|---|---|---|
 | `marison-core` | Business data/logic | **CORE** | None for supported site | Boundary errors/disabled core | Approved boundary |
-| Polylang Pro | Linked ID/EN content, multilingual Site Editor workflow | Primary production design target; not installed | WPML fallback | Procurement/license, custom-table adapter | **PRE-MULTILINGUAL-IMPLEMENTATION PROCUREMENT DECISION** |
-| WPML | Multilingual fallback | Optional | Polylang | Commercial dependency/admin surface | Not primary |
+| Polylang Free | Linked ID/EN content, CPT/taxonomy language relationships, `/en/` root | **Required free V1 tooling; not installed** | Standard WordPress i18n and controlled theme navigation | Free-version slug/navigation limits; custom-table adapter | Approved V1 direction |
+| Paid multilingual plugin | Additional premium workflow features | **Not required** | Polylang Free | License/procurement and operational dependency | Rejected for V1 |
 | SEO integration | Metadata/schema/sitemap | Optional | Replaceable adapter | Lock-in/duplicate metadata | Not selected |
 | Cache integration | Page/object cache | Optional | Host/LiteSpeed/native cache | Stale private data/lock-in | Environment validation |
 | ACF | Field/repeater UI | Not required | Native meta + custom UI | Plugin/license/translation coupling | Not approved; later spike possible |
@@ -1409,9 +1438,9 @@ yang lebih besar daripada update, licensing, privacy, performance, dan replaceme
 ### CORE / REQUIRED
 
 - `marison-core` — business data, rules, admin, privacy, integration boundary.
-- Polylang Pro adalah primary production design target; WPML adalah fallback. Hanya
-  satu multilingual authority yang boleh digunakan dalam satu Production install.
-  Procurement/license approval terpisah dari architecture approval.
+- Polylang Free adalah V1 multilingual authority bila multilingual implementation
+  dimulai. Hanya satu multilingual authority yang boleh digunakan dalam satu
+  Production install.
 
 ### OPTIONAL / REPLACEABLE
 
@@ -1469,13 +1498,18 @@ Tidak ada plugin di-install dalam pekerjaan architecture ini.
 
 ### ADR-WP-05 — Multilingual solution
 
-- **DECISION:** Polylang Pro sebagai primary production design target, WPML fallback;
-  custom bilingual layer ditolak untuk V1.
-- **ALTERNATIVES:** WPML primary; custom layer; single language.
-- **REASON:** Controlled Block Theme/Site Editor membutuhkan multilingual CPT,
-  taxonomy, navigation, URL-slug, synchronization, dan future integration support.
-- **TRADEOFF:** Procurement/license, custom table adapter, translation QA.
-- **REVERSIBILITY:** Sedang jika translation IDs dan content contract diekspor.
+- **DECISION:** Polylang Free + standard WordPress i18n + controlled free-compatible
+  theme navigation; no paid multilingual dependency for V1.
+- **ALTERNATIVES:** Polylang Pro; WPML; TranslatePress Free/Premium; custom
+  translation datastore; delaying multilingual implementation.
+- **REASON:** Zero license cost, linked Indonesian/English content, CPT/taxonomy
+  compatibility, language-neutral Unit/Lead/KPR data, and maintainability within the
+  controlled Block Theme boundary.
+- **TRADEOFF:** Free-version URL-slug and Site Editor navigation limitations; exact
+  English slugs are non-critical and navigation may use a small server-rendered theme
+  integration. Non-public House Type translation needs explicit supported hooks.
+- **REVERSIBILITY:** Sedang jika translation IDs/content contracts remain stable; a
+  future paid tool may only be considered after explicit owner procurement approval.
 
 ### ADR-WP-06 — Custom fields
 
@@ -1542,7 +1576,7 @@ Tidak ada plugin di-install dalam pekerjaan architecture ini.
 | Custom Unit table terlalu kompleks | Inventory tidak terkelola | Dedicated UI, CSV preview, scale testing |
 | Unit volume ternyata kecil | Overengineering | Stable abstraction; evaluasi dengan data nyata |
 | Admin field UI terlambat | Staff mengedit raw data | Prioritaskan Project/Unit/Branch screens |
-| Translation tier tidak cukup | English workflow tertahan | Confirm tier; WPML fallback; integration tests |
+| Polylang Free capability limit | English workflow or navigation constrained | Accept shared base slugs, use controlled server-rendered navigation, and keep Indonesian canonical operable |
 | Table relation mismatch lintas bahasa | Duplicate/missing context | Language-neutral tables + custom adapter |
 | Lead retention belum diputuskan | Privacy risk | Restricted table/hooks; policy gate before launch |
 | Staging DB overwrite Production | Kehilangan live content | Code/content separation, backup, no blind publish |
@@ -1562,19 +1596,7 @@ Tidak ada plugin di-install dalam pekerjaan architecture ini.
 Pertanyaan ini benar-benar memerlukan human approval; rekomendasi teknis tetap dibuat
 di bagian lain dan tidak dihindari karena open questions.
 
-### OA-Q01 — Polylang Pro procurement/license
-
-- **RECOMMENDED DEFAULT:** Polylang Pro sebagai primary production design target.
-- **ALTERNATIVES:** WPML; menunda multilingual production implementation.
-- **WHY:** Controlled Block Theme/Site Editor workflow membutuhkan feature coverage
-  yang ditargetkan oleh Polylang Pro.
-- **IMPACT:** Procurement/license approval, deployment dependency, translation QA.
-- **CLASSIFICATION:** **PRE-MULTILINGUAL-IMPLEMENTATION PROCUREMENT DECISION**.
-- **BLOCKING ARCHITECTURE?** **NO**.
-- **BLOCKING MULTILINGUAL PRODUCTION IMPLEMENTATION?** **YES** bila workflow yang
-  dipilih memerlukan feature Pro dan belum ada license approval.
-
-### OA-Q02 — Lead retention dan access policy
+### OA-Q01 — Lead retention dan access policy
 
 - **RECOMMENDED DEFAULT:** Tetapkan retention, authorized role, export/delete process,
   dan consent notice sebelum production form aktif; durasi tidak diinventkan.
@@ -1586,7 +1608,7 @@ di bagian lain dan tidak dihindari karena open questions.
 - **BLOCKING ARCHITECTURE?** **NO**.
 - **BLOCKING LAUNCH?** **YES** sebelum production Lead collection.
 
-### OA-Q03 — Unit scale dan import cadence
+### OA-Q02 — Unit scale dan import cadence
 
 - **RECOMMENDED DEFAULT:** Tetap custom table; ukur Unit per Project, update frequency,
   dan CSV kebutuhan pada staging/sample.
@@ -1598,7 +1620,7 @@ di bagian lain dan tidak dihindari karena open questions.
 - **IMPACT BEFORE IMPORTER UX:** Menentukan batch limits, preview behavior, dan
   performance tuning.
 
-### OA-Q04 — Data ownership dan approval workflow
+### OA-Q03 — Data ownership dan approval workflow
 
 - **RECOMMENDED DEFAULT:** Administrator untuk system; Content Editor untuk editorial;
   Project/Inventory Manager untuk Project/Unit; authorized subset untuk Lead/KPR.
@@ -1609,7 +1631,7 @@ di bagian lain dan tidak dihindari karena open questions.
 - **BLOCKING ARCHITECTURE?** **NO**.
 - **IMPACT:** Menentukan exact roles, approval workflow, training, dan publish gate.
 
-### OA-Q05 — Hostinger account deployment capability
+### OA-Q04 — Hostinger account deployment capability
 
 - **RECOMMENDED DEFAULT:** Git/SSH code deployment dan separate content/database;
   staging Publish files+DB hanya exceptional migration.
@@ -1620,7 +1642,7 @@ di bagian lain dan tidak dihindari karena open questions.
 - **BLOCKING ARCHITECTURE?** **NO**.
 - **BLOCKING FIRST DEPLOYMENT?** **YES** sampai behavior account terverifikasi.
 
-### OA-Q06 — Corporate contact/fallback
+### OA-Q05 — Corporate contact/fallback
 
 - **RECOMMENDED DEFAULT:** Central contact di restricted settings; fallback hanya bila
   explicit; jangan silent Branch reroute.
@@ -1630,7 +1652,7 @@ di bagian lain dan tidak dihindari karena open questions.
 - **BLOCKING ARCHITECTURE?** **NO**.
 - **BLOCKING LAUNCH OF FALLBACK CONTACT BEHAVIOR?** **YES** sampai contact disetujui.
 
-### OA-Q07 — Map provider/coordinates
+### OA-Q06 — Map provider/coordinates
 
 - **RECOMMENDED DEFAULT:** Provider-independent address/coordinates; map hanya setelah
   provider/privacy/performance policy disetujui.
@@ -1641,7 +1663,7 @@ di bagian lain dan tidak dihindari karena open questions.
 - **BLOCKING ARCHITECTURE?** **NO**.
 - **BLOCKING MAP INTEGRATION?** **YES** sampai provider disetujui.
 
-### OA-Q08 — Public pricing activation
+### OA-Q07 — Public pricing activation
 
 - **RECOMMENDED DEFAULT:** Price bukan V1 requirement; siapkan extension point tanpa
   menampilkan data yang belum approved.
@@ -1678,8 +1700,8 @@ keputusan tertulis:
 - [ ] Leads internal, restricted, privacy-lifecycle-ready, tanpa field terlarang.
 - [ ] KPR mendukung history/multiple schemes dan satu eligible public default.
 - [ ] Indonesian/English linked; shared fields tidak diduplikasi secara manual.
-- [ ] Polylang Pro menjadi primary production design target tanpa menganggap procurement
-      license telah disetujui.
+- [ ] Polylang Free menjadi V1 multilingual authority tanpa paid dependency; standard
+      WordPress i18n dan controlled free-compatible navigation tetap digunakan.
 - [ ] Theme/plugin boundaries jelas dan dapat diuji dengan theme disabled.
 - [ ] Code/docs bekerja dengan dua komputer Git workflow.
 - [ ] Production content tidak casually overwritten oleh staging.
