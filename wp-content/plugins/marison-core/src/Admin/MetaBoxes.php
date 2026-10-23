@@ -167,7 +167,7 @@ final class MetaBoxes {
 		?>
 		<p><label for="marison_branch_whatsapp"><strong>Primary Public WhatsApp</strong></label></p>
 		<input class="widefat" id="marison_branch_whatsapp" name="marison_branch_whatsapp" type="text" value="<?php echo esc_attr( $whatsapp ); ?>" />
-		<p class="description">Simpan nomor yang dapat dihubungi publik. Format negara tidak dipaksakan.</p>
+		<p class="description">Untuk WhatsApp, gunakan format internasional lengkap dengan kode negara, misalnya +62 812 3456 7890. Marison tidak menambahkan atau menebak kode negara; jika nomor tidak memenuhi format, routing akan memakai telepon atau fallback yang tersedia.</p>
 
 		<p><label for="marison_branch_telephone"><strong>Telepon publik (opsional)</strong></label></p>
 		<input class="widefat" id="marison_branch_telephone" name="marison_branch_telephone" type="text" value="<?php echo esc_attr( $telephone ); ?>" />
