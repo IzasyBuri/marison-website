@@ -16,6 +16,10 @@ final class Meta {
 	public const PROJECT_PROGRESS = '_marison_project_progress_percentage';
 	public const PROJECT_PROGRESS_DESCRIPTION = '_marison_project_progress_description';
 	public const PROJECT_ADDRESS = '_marison_project_address';
+	public const PROJECT_AVAILABILITY_MODE = '_marison_project_availability_mode';
+	public const PROJECT_MANUAL_AVAILABLE = '_marison_project_manual_available';
+	public const PROJECT_MANUAL_BOOKED = '_marison_project_manual_booked';
+	public const PROJECT_MANUAL_SOLD = '_marison_project_manual_sold';
 	public const HOUSE_TYPE_PROJECT = '_marison_house_type_project';
 	public const HOUSE_TYPE_BUILDING_AREA = '_marison_house_type_building_area';
 	public const HOUSE_TYPE_LAND_AREA = '_marison_house_type_land_area';
@@ -32,6 +36,10 @@ final class Meta {
 		self::register_meta( 'marison_project', self::PROJECT_PROGRESS, 'integer', [ Validation::class, 'sanitize_percentage' ] );
 		self::register_meta( 'marison_project', self::PROJECT_PROGRESS_DESCRIPTION, 'string', 'sanitize_textarea_field' );
 		self::register_meta( 'marison_project', self::PROJECT_ADDRESS, 'string', 'sanitize_textarea_field' );
+		self::register_meta( 'marison_project', self::PROJECT_AVAILABILITY_MODE, 'string', [ Validation::class, 'sanitize_availability_mode' ] );
+		self::register_meta( 'marison_project', self::PROJECT_MANUAL_AVAILABLE, 'integer', [ Validation::class, 'sanitize_non_negative_integer' ] );
+		self::register_meta( 'marison_project', self::PROJECT_MANUAL_BOOKED, 'integer', [ Validation::class, 'sanitize_non_negative_integer' ] );
+		self::register_meta( 'marison_project', self::PROJECT_MANUAL_SOLD, 'integer', [ Validation::class, 'sanitize_non_negative_integer' ] );
 
 		self::register_meta( 'marison_house_type', self::HOUSE_TYPE_PROJECT, 'integer', [ Validation::class, 'sanitize_project_id' ] );
 		self::register_meta( 'marison_house_type', self::HOUSE_TYPE_BUILDING_AREA, 'number', [ Validation::class, 'sanitize_non_negative_number' ] );
@@ -62,5 +70,13 @@ final class Meta {
 
 	public static function authorize( bool $allowed, string $meta_key, int $post_id, int $user_id ): bool {
 		return user_can( $user_id, 'edit_post', $post_id );
+	}
+
+	public static function manual_key( string $status ): string {
+		return [
+			'available' => self::PROJECT_MANUAL_AVAILABLE,
+			'booked' => self::PROJECT_MANUAL_BOOKED,
+			'sold' => self::PROJECT_MANUAL_SOLD,
+		][ $status ] ?? '';
 	}
 }
