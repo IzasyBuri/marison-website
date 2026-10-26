@@ -77,6 +77,51 @@ Text Domain: marison
 .marison-homepage :where(.wp-block-group, h1, h2, h3, p) { min-width: 0; max-width: 100%; overflow-wrap: break-word; }
 .marison-homepage .marison-home-hero > * { min-width: 0; max-width: 100%; }
 
+.marison-article-archive { overflow: hidden; }
+.marison-article-archive__intro-wrap,
+.marison-article-archive > .wp-block-query { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
+.marison-article-archive-intro { padding-block: var(--wp--preset--spacing--xx-large) var(--wp--preset--spacing--x-large); }
+.marison-article-archive-intro > :where(h1, p) { max-width: 72ch; }
+.marison-article-archive-intro h1 { margin-block: 0 var(--wp--preset--spacing--small); font-size: var(--wp--preset--font-size--display); line-height: 1.08; }
+.marison-article-archive-intro__lead { margin: 0; font-size: var(--wp--preset--font-size--large); }
+.marison-article-eyebrow { margin: 0 0 var(--wp--preset--spacing--x-small); color: var(--wp--preset--color--primary-green); font-size: var(--wp--preset--font-size--small); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.marison-article-archive .wp-block-post-template { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+.marison-article-archive .wp-block-post-template > li { width: auto !important; min-width: 0; margin: 0; }
+.marison-article-card { height: 100%; }
+.marison-article-card .marison-image--editorial { display: block; width: 100%; }
+.marison-article-card__date { margin: 0; color: #59615b; font-size: var(--wp--preset--font-size--small); }
+.marison-article-card h2 { margin: 0; font-size: var(--wp--preset--font-size--h3); line-height: 1.2; }
+.marison-article-card p { margin: 0; }
+.marison-article-card .marison-card__content { align-content: start; }
+.marison-article-empty { display: grid; gap: var(--wp--preset--spacing--small); margin-block: var(--wp--preset--spacing--large); padding: var(--wp--preset--spacing--large); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); border-radius: var(--wp--preset--spacing--small); background: var(--wp--preset--color--white); }
+.marison-article-empty :where(h2, p) { margin: 0; }
+.marison-article-archive .wp-block-query-pagination { display: flex; flex-wrap: wrap; gap: var(--wp--preset--spacing--x-small); margin-block: var(--wp--preset--spacing--large); }
+.marison-article-archive .wp-block-query-pagination > * { margin: 0; }
+.marison-article-archive .wp-block-query-pagination a,
+.marison-article-archive .wp-block-query-pagination .current { display: inline-flex; min-width: 2.75rem; min-height: 2.75rem; align-items: center; justify-content: center; border: 1px solid #59615b; border-radius: var(--wp--preset--spacing--x-small); padding-inline: .625rem; }
+.marison-article-archive .wp-block-query-pagination .current { background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); }
+.marison-article-cta { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin: var(--wp--preset--spacing--x-large) auto 0; padding: var(--wp--preset--spacing--large); }
+.marison-article-cta :where(h2, p) { margin-block: 0 var(--wp--preset--spacing--small); }
+.marison-article-cta > :last-child { margin-bottom: 0; }
+.marison-article-cta .wp-block-button__link,
+.marison-article-cta > p > .wp-block-button__link { background: var(--wp--preset--color--white); color: var(--wp--preset--color--deep-green); }
+.marison-article-template { width: 100%; max-width: none !important; }
+.marison-article-hero { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; padding-block: var(--wp--preset--spacing--xx-large) var(--wp--preset--spacing--large); }
+.marison-article-hero h1 { max-width: 18ch; margin-block: 0 var(--wp--preset--spacing--small); font-size: var(--wp--preset--font-size--display); line-height: 1.08; }
+.marison-article-meta { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; color: #59615b; font-size: var(--wp--preset--font-size--small); }
+.marison-article-featured-image { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin: var(--wp--preset--spacing--medium) auto 0; }
+.marison-article-featured-image img { display: block; width: 100%; height: clamp(18rem, 48vw, 42rem); border-radius: var(--wp--preset--spacing--medium); object-fit: cover; }
+.marison-article-featured-image.marison-image--fallback { min-height: 18rem; border-radius: var(--wp--preset--spacing--medium); }
+.marison-article-content { box-sizing: border-box; width: min(720px, calc(100% - 2rem)); max-width: 720px !important; margin: var(--wp--preset--spacing--x-large) auto; }
+.marison-article-content > :first-child { margin-top: 0; }
+.marison-article-content > :last-child { margin-bottom: 0; }
+.marison-article-content :where(img, video, iframe) { max-width: 100%; }
+.marison-article-content .wp-block-image { margin-inline: 0; }
+.marison-article-content .wp-block-table { overflow-x: auto; }
+.marison-article-content .wp-block-table table { min-width: 36rem; }
+.marison-article-related-projects { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin: var(--wp--preset--spacing--x-large) auto; }
+.marison-article-related-projects h2 { margin-block: 0 var(--wp--preset--spacing--medium); }
+
 .marison-kpr-page { overflow: hidden; }
 .marison-kpr-page > :where(.marison-kpr-page__hero, .marison-kpr-page__education, .marison-kpr-page__future-simulation, .marison-kpr-page__disclaimer) { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
 .marison-kpr-page__hero,
@@ -258,6 +303,13 @@ Text Domain: marison
 
 @media (max-width: 781px) {
 	.marison-foundation-grid { grid-template-columns: 1fr; }
+	.marison-article-archive .wp-block-post-template { grid-template-columns: 1fr; }
+	.marison-article-hero { padding-block: var(--wp--preset--spacing--x-large) var(--wp--preset--spacing--medium); }
+	.marison-article-hero h1 { font-size: clamp(2rem, 10vw, 3rem); }
+	.marison-article-featured-image img,
+	.marison-article-featured-image.marison-image--fallback { border-radius: var(--wp--preset--spacing--small); }
+	.marison-article-featured-image img { height: 12rem; }
+	.marison-article-cta { padding: var(--wp--preset--spacing--medium); }
 	.marison-directory__filter-grid { grid-template-columns: 1fr; }
 	.marison-directory__filter-actions > * { width: 100%; }
 	.marison-image--hero { border-radius: var(--wp--preset--spacing--small); }
