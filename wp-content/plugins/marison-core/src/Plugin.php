@@ -25,6 +25,7 @@ require_once __DIR__ . '/Multilingual/Resolver.php';
 require_once __DIR__ . '/Presentation/Homepage.php';
 require_once __DIR__ . '/Presentation/Directory.php';
 require_once __DIR__ . '/Presentation/ProjectDetail.php';
+require_once __DIR__ . '/Presentation/KprPage.php';
 require_once __DIR__ . '/Admin/KPRSchemes.php';
 require_once __DIR__ . '/Leads/LeadRules.php';
 require_once __DIR__ . '/Leads/LeadRepository.php';
@@ -60,6 +61,7 @@ use Marison\Core\Support\Capabilities;
 use Marison\Core\Support\Meta;
 use Marison\Core\Support\Validation;
 use Marison\Core\Presentation\Directory;
+use Marison\Core\Presentation\KprPage;
 
 final class Plugin {
 	private static ?self $instance = null;
@@ -91,6 +93,7 @@ final class Plugin {
 
 	private function __construct() {
 		Polylang::register();
+		add_action( 'pll_init', [ KprPage::class, 'register_strings' ] );
 		add_action( 'init', [ Schema::class, 'maybe_upgrade' ], 1 );
 		add_action( 'init', [ ContentTypes::class, 'register' ], 5 );
 		add_action( 'init', [ Taxonomies::class, 'register' ], 5 );

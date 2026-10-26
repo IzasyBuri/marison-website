@@ -77,6 +77,49 @@ Text Domain: marison
 .marison-homepage :where(.wp-block-group, h1, h2, h3, p) { min-width: 0; max-width: 100%; overflow-wrap: break-word; }
 .marison-homepage .marison-home-hero > * { min-width: 0; max-width: 100%; }
 
+.marison-kpr-page { overflow: hidden; }
+.marison-kpr-page > :where(.marison-kpr-page__hero, .marison-kpr-page__education, .marison-kpr-page__future-simulation, .marison-kpr-page__disclaimer) { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
+.marison-kpr-page__hero,
+.marison-kpr-page__education,
+.marison-kpr-page__future-simulation,
+.marison-kpr-page__disclaimer { padding-block: var(--wp--preset--spacing--x-large); }
+.marison-kpr-page__hero { padding-block: var(--wp--preset--spacing--xx-large) var(--wp--preset--spacing--x-large); }
+.marison-kpr-page__hero h1,
+.marison-kpr-page__hero p,
+.marison-kpr-page__education > :last-child,
+.marison-kpr-page__future-simulation > :last-child,
+.marison-kpr-page__disclaimer > :last-child { margin-bottom: 0; }
+.marison-kpr-page__hero h1 { max-width: 16ch; }
+.marison-kpr-page__hero p,
+.marison-kpr-page__education,
+.marison-kpr-page__future-simulation,
+.marison-kpr-page__disclaimer { max-width: 75ch; }
+.marison-kpr-page__education > :first-child,
+.marison-kpr-page__future-simulation > :first-child,
+.marison-kpr-page__disclaimer > :first-child { margin-top: 0; }
+.marison-kpr-page__simulation { padding-block: var(--wp--preset--spacing--x-large); }
+.marison-kpr-page__simulation > .wp-block-group,
+.marison-kpr-page__next-actions > .wp-block-group { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
+.marison-kpr-page__next-actions { padding-block: var(--wp--preset--spacing--x-large); color: var(--wp--preset--color--white); }
+.marison-kpr-page__next-actions .wp-block-buttons { margin-bottom: 0; }
+.marison-kpr-page__next-actions .wp-block-button__link { background: var(--wp--preset--color--white); color: var(--wp--preset--color--deep-green); }
+.marison-kpr-status { display: grid; gap: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--large); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 25%, transparent); border-left: .35rem solid var(--wp--preset--color--primary-green); border-radius: var(--wp--preset--spacing--small); background: var(--wp--preset--color--soft-sage); }
+.marison-kpr-status > :where(h2, h3, p) { margin-block: 0; }
+.marison-kpr-status__eyebrow { color: var(--wp--preset--color--primary-green); font-size: var(--wp--preset--font-size--small); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.marison-kpr-status__state { font-weight: 700; }
+.marison-kpr-status__configuration,
+.marison-kpr-status__disclaimer { display: grid; gap: var(--wp--preset--spacing--small); margin-top: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--medium); border-radius: var(--wp--preset--spacing--x-small); background: var(--wp--preset--color--white); }
+.marison-kpr-status__configuration h3,
+.marison-kpr-status__disclaimer h3 { margin: 0; }
+.marison-kpr-status__configuration dl,
+.marison-kpr-status__disclaimer p { margin: 0; }
+.marison-kpr-status__configuration dt { color: #59615b; font-size: var(--wp--preset--font-size--small); }
+.marison-kpr-status__configuration dd { margin: .25rem 0 0; font-weight: 600; }
+.marison-kpr-status__facts { display: grid; gap: var(--wp--preset--spacing--small); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.marison-kpr-status__facts ul { display: flex; flex-wrap: wrap; gap: .4rem .75rem; list-style: none; margin: 0; padding: 0; }
+.marison-kpr-status__facts li { font-weight: 600; }
+.marison-kpr-status__translation-note { color: #59615b; font-size: var(--wp--preset--font-size--small); }
+
 .marison-directory-page__intro { padding-block: var(--wp--preset--spacing--xx-large) var(--wp--preset--spacing--x-large); }
 .marison-directory { display: grid; gap: var(--wp--preset--spacing--large); width: 100%; max-width: min(1200px, calc(100vw - 2rem)) !important; margin-inline: auto !important; padding-block: 0 var(--wp--preset--spacing--xx-large); }
 .marison-directory__filters { display: grid; gap: var(--wp--preset--spacing--medium); background: var(--wp--preset--color--white); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); border-radius: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--medium); }

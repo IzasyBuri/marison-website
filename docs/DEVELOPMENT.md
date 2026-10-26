@@ -319,6 +319,60 @@ permanent business rule. If a future approved Scheme requires greater precision,
 domain/storage boundary must evolve without changing the percentage-point meaning of
 existing values.
 
+## KPR Page v1 phase
+
+The public KPR experience is a normal WordPress Page at `/kpr/`; it is not a public
+KPR Scheme archive or Scheme single. The native `page-kpr.html` template owns only
+Header → Page content → Footer structure. Insert the `marison/kpr-content` pattern
+into the Indonesian Page as a seed, then edit the resulting blocks as ordinary Page
+content. Create and translate the linked English Page independently through Polylang;
+Page education may diverge between languages.
+
+The `marison/kpr-status` dynamic block is deliberately narrow. It consumes the
+`marison-core` `KprPage` read model for Public Default availability, safe configured
+Scheme facts, calculator state, and disclaimer/editorial translation state. It does
+not own the Page's education, render input controls, collect Leads, expose pricing,
+or produce payment figures. When a valid Public Default exists, the public state is
+still `NOT_IMPLEMENTED` until Marison approves and implements the calculation formula.
+When no eligible default exists, education remains available and the status is shown
+as unavailable without selecting a replacement or fabricating assumptions.
+
+Annual rate remains an exact percentage-point annual configuration, tenure remains
+integer months (with exact year equivalents shown where possible), `default_dp_percent`
+remains a default simulation assumption rather than a minimum or eligibility rule,
+and effective date remains date-only. These structured values are shared and are not
+duplicated into English KPR Scheme records.
+
+Scheme title and disclaimer are editorial/public text. During the Polylang admin
+initialization lifecycle (`pll_init` in an admin request), the active Scheme's
+canonical values are registered in **Languages → Translations** through Polylang's
+string API. The internal registration keys include the active Scheme identity, the
+`Marison KPR` group is used, titles are single-line strings, and disclaimers are
+multiline strings. Indonesian uses the canonical text; English uses the matching
+Polylang string translation when configured. If no English editorial translation
+exists, the read model returns a `MISSING_TRANSLATION` state and the page labels the
+canonical Indonesian fallback honestly. A changed canonical source string is a new
+Polylang source value, so an old translation is not applied to the changed text; an
+inactive/deleted Scheme is not registered on later admin requests. No custom
+translation table or duplicate financial Scheme is created. A missing configured
+disclaimer is reported as unavailable rather than replaced with new legal copy.
+Polylang resolves a translation by canonical source text and language; two Schemes
+with intentionally identical canonical text therefore share that identical source
+translation, while different title/disclaimer source text cannot inherit the other
+Scheme's translation.
+
+Each environment must provision the Indonesian `/kpr/` Page and linked English Page
+locally; Page content, Polylang relationships, and Scheme title/disclaimer string
+translations configured through **Languages → Translations** are WordPress database
+state and are not synchronized through Git. Each independent home/office local
+database may require its own translation setup. Production/staging content migration
+must preserve the relevant WordPress and Polylang database content; do not commit
+database exports. Numeric KPR configuration remains single-source and is not
+re-entered per language. Keep the KPR Scheme CPT non-public and restore any local
+test Scheme, Public Default pointer, temporary Page, and Polylang state after runtime
+validation. The Homepage and Project Detail KPR links resolve through the existing
+localized Resolver and should not gain separate routing logic.
+
 ## Frontend design-system foundation phase
 
 The Marison Block Theme keeps design tokens in `theme.json` and semantic interaction/
