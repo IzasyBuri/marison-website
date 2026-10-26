@@ -28,6 +28,7 @@ final class Meta {
 	public const HOUSE_TYPE_FLOORS = '_marison_house_type_floors';
 	public const BRANCH_WHATSAPP = '_marison_branch_whatsapp';
 	public const BRANCH_TELEPHONE = '_marison_branch_telephone';
+	public const ARTICLE_PROJECTS = '_marison_article_projects';
 
 	public static function register(): void {
 		self::register_meta( 'marison_project', self::PROJECT_STATUS, 'string', [ Validation::class, 'sanitize_project_status' ] );
@@ -50,6 +51,7 @@ final class Meta {
 
 		self::register_meta( 'marison_branch', self::BRANCH_WHATSAPP, 'string', [ Validation::class, 'sanitize_contact_number' ] );
 		self::register_meta( 'marison_branch', self::BRANCH_TELEPHONE, 'string', [ Validation::class, 'sanitize_contact_number' ] );
+		self::register_meta( 'post', self::ARTICLE_PROJECTS, 'array', [ Validation::class, 'sanitize_article_project_ids' ], [] );
 
 		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_state', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_state' ] );
 		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_annual_rate', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_rate' ] );

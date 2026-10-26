@@ -77,6 +77,17 @@ final class Validation {
 		);
 	}
 
+	public static function sanitize_article_project_ids( $value ): array {
+		$ids = [];
+		foreach ( self::sanitize_post_ids( $value ) as $id ) {
+			$id = \Marison\Core\Multilingual\Resolver::canonical_post_id( $id );
+			if ( self::is_valid_post( $id, 'marison_project' ) ) {
+				$ids[] = $id;
+			}
+		}
+		return array_values( array_unique( $ids ) );
+	}
+
 	public static function sanitize_contact_number( $value ): string {
 		$value = sanitize_text_field( (string) $value );
 		$value = preg_replace( '/[^\d+\s().-]/u', '', $value );
@@ -120,8 +131,8 @@ final class Validation {
 		}
 		if ( ! self::is_valid_post( $branch_id, 'marison_branch', true ) ) {
 			$errors[] = 'Project wajib memiliki satu Primary Branch Office yang aktif.';
-		} elseif ( ! self::is_valid_contact_number( get_post_meta( $branch_id, Meta::BRANCH_WHATSAPP, true ) ) ) {
-			$errors[] = 'Primary Branch Office wajib memiliki Primary Public WhatsApp.';
+		} elseif ( ! self::branch_has_contact( $branch_id ) && ! self::corporate_fallback_available() ) {
+			$errors[] = 'Primary Branch Office wajib memiliki WhatsApp, telepon, atau fallback korporat yang valid.';
 		}
 		if ( 1 !== count( $location_ids ) || ! self::is_valid_location( (int) $location_ids[0] ) ) {
 			$errors[] = 'Project wajib memiliki tepat satu lokasi City / Regency yang valid.';
@@ -138,9 +149,20 @@ final class Validation {
 	}
 
 	public static function branch_errors( int $post_id ): array {
-		return ! self::is_valid_contact_number( get_post_meta( $post_id, Meta::BRANCH_WHATSAPP, true ) )
-			? [ 'Branch Office wajib memiliki Primary Public WhatsApp.' ]
+		return ! self::branch_has_contact( $post_id ) && ! self::corporate_fallback_available()
+			? [ 'Branch Office wajib memiliki Primary Public WhatsApp atau telepon publik, atau fallback korporat yang valid.' ]
 			: [];
+	}
+
+	public static function branch_has_contact( int $branch_id ): bool {
+		return self::is_valid_contact_number( get_post_meta( $branch_id, Meta::BRANCH_WHATSAPP, true ) )
+			|| self::is_valid_contact_number( get_post_meta( $branch_id, Meta::BRANCH_TELEPHONE, true ) );
+	}
+
+	public static function corporate_fallback_available(): bool {
+		$telephone = \Marison\Core\Settings\CorporateSettings::get( \Marison\Core\Settings\CorporateSettings::TELEPHONE );
+		$email = sanitize_email( \Marison\Core\Settings\CorporateSettings::get( \Marison\Core\Settings\CorporateSettings::EMAIL ) );
+		return self::is_valid_contact_number( $telephone ) || '' !== $email;
 	}
 
 	public static function prevent_delete_with_units( int $post_id, \WP_Post $post ): void {
@@ -263,7 +285,7 @@ final class Validation {
 			]
 		);
 
-		if ( self::is_valid_post( $branch_id, 'marison_branch', true ) && self::is_valid_contact_number( get_post_meta( $branch_id, Meta::BRANCH_WHATSAPP, true ) ) ) {
+		if ( self::is_valid_post( $branch_id, 'marison_branch', true ) && ( self::branch_has_contact( $branch_id ) || self::corporate_fallback_available() ) ) {
 			return;
 		}
 
