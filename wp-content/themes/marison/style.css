@@ -64,7 +64,23 @@ Text Domain: marison
 
 .marison-foundation-grid { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .marison-language-switcher { display: inline-flex; gap: var(--wp--preset--spacing--x-small); align-items: center; font-size: var(--wp--preset--font-size--small); }
+.marison-site-header { border-bottom: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 18%, transparent); }
+.marison-site-footer { padding-block: var(--wp--preset--spacing--large); }
+.marison-home-hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--wp--preset--spacing--large); padding-block: var(--wp--preset--spacing--xx-large); }
+.marison-home-hero__media { min-height: 18rem; }
+.marison-home-section { padding-block: var(--wp--preset--spacing--x-large); }
+.marison-card__content { display: grid; gap: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--medium); }
+.marison-home-final-cta { padding-block: var(--wp--preset--spacing--x-large); }
+.marison-homepage .marison-home-section > .wp-block-group,
+.marison-homepage > .wp-block-heading { padding-inline: var(--wp--preset--spacing--medium); }
+.marison-homepage :where(.wp-block-group, h1, h2, h3, p) { min-width: 0; max-width: 100%; overflow-wrap: break-word; }
+.marison-homepage .marison-home-hero > * { min-width: 0; max-width: 100%; }
 
-@media (max-width: 781px) { .marison-foundation-grid { grid-template-columns: 1fr; } .marison-image--hero { border-radius: var(--wp--preset--spacing--small); } }
+@media (max-width: 781px) {
+	.marison-foundation-grid { grid-template-columns: 1fr; }
+	.marison-image--hero { border-radius: var(--wp--preset--spacing--small); }
+	.marison-homepage .has-display-font-size { font-size: clamp(2rem, 10vw, 3rem); line-height: 1.1; }
+	.marison-homepage .has-large-font-size { font-size: 1.25rem !important; }
+}
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; } }

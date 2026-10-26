@@ -77,6 +77,17 @@ WordPress core is provided by the container and is not committed to Git. The
 database and WordPress runtime volume are local Docker volumes. Uploads and debug
 logs are local runtime data and are ignored by Git.
 
+### Local pretty-permalink setup
+
+After the initial WordPress setup, open **Settings → Permalinks**, select
+**Post name**, and click **Save Changes** once on each computer. This is the
+normal WordPress permalink workflow; it writes the generated rules to the
+container's writable `/var/www/html/.htaccess`. The Compose Apache image already
+loads `mod_rewrite` and permits WordPress overrides, so do not edit `.htaccess`
+manually or add a custom `/en/` redirect. If a local runtime ever returns an
+Apache 404 for a known pretty URL, repeat this WordPress admin save operation
+before investigating application code.
+
 Useful lifecycle commands:
 
 ```powershell
@@ -173,6 +184,12 @@ availability source mode, and server-rendered admin inventory management.
 Unit data survives plugin deactivation and uninstall. Normal upgrades run the schema
 check automatically; administrators do not execute raw SQL. Local tests may create
 temporary synthetic Unit rows, but must delete them before leaving the workspace.
+
+Homepage editorial copy belongs to the canonical WordPress Homepage Page content,
+not a shared theme template. The controlled `Marison Homepage Content` pattern can
+seed the structure; editors can translate the linked English Page independently in
+Polylang. Dynamic Project, Location, and Article sections remain read-only theme
+presentation fed by `marison-core`.
 
 It does not include frontend Unit presentation, public Unit routes, CSV import/export,
 siteplan data, pricing, KPR, Career, multilingual integration, frontend forms,
