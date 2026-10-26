@@ -23,6 +23,7 @@ require_once __DIR__ . '/KPR/Calculator.php';
 require_once __DIR__ . '/Multilingual/Polylang.php';
 require_once __DIR__ . '/Multilingual/Resolver.php';
 require_once __DIR__ . '/Presentation/Homepage.php';
+require_once __DIR__ . '/Presentation/Directory.php';
 require_once __DIR__ . '/Admin/KPRSchemes.php';
 require_once __DIR__ . '/Leads/LeadRules.php';
 require_once __DIR__ . '/Leads/LeadRepository.php';
@@ -57,6 +58,7 @@ use Marison\Core\Reference\Taxonomies;
 use Marison\Core\Support\Capabilities;
 use Marison\Core\Support\Meta;
 use Marison\Core\Support\Validation;
+use Marison\Core\Presentation\Directory;
 
 final class Plugin {
 	private static ?self $instance = null;
@@ -92,6 +94,7 @@ final class Plugin {
 		add_action( 'init', [ ContentTypes::class, 'register' ], 5 );
 		add_action( 'init', [ Taxonomies::class, 'register' ], 5 );
 		add_action( 'init', [ Meta::class, 'register' ], 20 );
+		add_filter( 'wp_robots', [ Directory::class, 'filter_robots' ] );
 		add_action( 'init', [ Capabilities::class, 'ensure_admin_capabilities' ], 0 );
 		add_action( 'admin_init', [ Capabilities::class, 'ensure_admin_capabilities' ] );
 		add_action( 'admin_init', [ CorporateSettings::class, 'register' ] );

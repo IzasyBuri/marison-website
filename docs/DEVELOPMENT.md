@@ -191,6 +191,48 @@ seed the structure; editors can translate the linked English Page independently 
 Polylang. Dynamic Project, Location, and Article sections remain read-only theme
 presentation fed by `marison-core`.
 
+## Housing Directory v1 phase
+
+The Housing Directory is a normal WordPress Page with the slug `perumahan`. Create
+the Indonesian Page, use the slug-based `page-perumahan.html` structural template,
+and insert the controlled `Marison Housing Directory Content` pattern. Create and
+link its English translation through Polylang; the translated Page uses the generic
+`page.html` structural fallback when its translated slug differs. Editorial title
+and introduction belong to each Page's content and may be edited independently;
+the `marison/housing-directory` block supplies the server-rendered discovery UI.
+Do not create a Project archive or a location archive. After creating or changing
+these Pages, save **Settings → Permalinks** once so the normal WordPress Page and
+existing Project single rewrite rules are refreshed; do not commit `.htaccess`.
+
+The Directory accepts these shareable GET parameters:
+
+| Parameter | Contract |
+|---|---|
+| `location_term_id` | Optional validated `marison_location` City / Regency term ID at depth 3 |
+| `province_term_id` | Optional validated Province term ID at depth 2; when combined with City / Regency, it must be the direct parent |
+| `project_status` | Optional fixed value: `upcoming`, `ongoing`, or `completed` |
+| `paged` | Server-rendered page number; normalized to a positive value; no user page-size parameter |
+
+The Directory uses a fixed page size of **9** and deterministic publish-date
+descending/ID-descending order. Core queries canonical Indonesian Projects only,
+then resolves English presentation through the existing Resolver. A missing English
+Project translation remains in the business result and displays the canonical
+Indonesian presentation rather than being silently removed. Location labels remain
+shared in V1.
+
+The unfiltered `/perumahan/` Page is indexable. Active filter and pagination query
+states receive `noindex,follow` through the core `wp_robots` integration; no SEO
+plugin or custom canonical route is required. The base Page and translated Page
+permalinks remain WordPress/Polylang responsibilities.
+
+For local validation, create clearly synthetic Country → Province → City / Regency
+terms and valid published Projects, then remove them and any temporary scripts after
+testing. Validate the unfiltered Page, City/Regency and Province filters, optional
+Project Status, mismatch/invalid input, pagination, English fallback, `/en/`, and
+the existing `/perumahan/[project]/` permalink. WordPress Page and Polylang content
+is database state, so each computer must reproduce the Page setup locally; Git
+contains only the template, pattern, core logic, styles, and this workflow.
+
 It does not include frontend Unit presentation, public Unit routes, CSV import/export,
 siteplan data, pricing, KPR, Career, multilingual integration, frontend forms,
 production connections, or deployment.

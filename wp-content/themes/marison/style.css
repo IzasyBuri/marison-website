@@ -3,7 +3,7 @@ Theme Name: Marison
 Theme URI: https://marison.id/
 Author: Marison Group
 Description: Controlled Custom Block Theme foundation for Marison ID.
-Version: 0.1.0
+Version: 0.1.1
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: marison
@@ -60,6 +60,7 @@ Text Domain: marison
 
 .marison-image--hero { aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--wp--preset--spacing--medium); }
 .marison-image--card { aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--wp--preset--spacing--small); }
+.marison-image--fallback { display: grid; place-items: center; background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); font-size: var(--wp--preset--font-size--large); font-weight: 600; letter-spacing: 0.08em; }
 .marison-image--editorial { aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--wp--preset--spacing--small); }
 
 .marison-foundation-grid { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -76,8 +77,31 @@ Text Domain: marison
 .marison-homepage :where(.wp-block-group, h1, h2, h3, p) { min-width: 0; max-width: 100%; overflow-wrap: break-word; }
 .marison-homepage .marison-home-hero > * { min-width: 0; max-width: 100%; }
 
+.marison-directory-page__intro { padding-block: var(--wp--preset--spacing--xx-large) var(--wp--preset--spacing--x-large); }
+.marison-directory { display: grid; gap: var(--wp--preset--spacing--large); width: 100%; max-width: min(1200px, calc(100vw - 2rem)) !important; margin-inline: auto !important; padding-block: 0 var(--wp--preset--spacing--xx-large); }
+.marison-directory__filters { display: grid; gap: var(--wp--preset--spacing--medium); background: var(--wp--preset--color--white); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); border-radius: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--medium); }
+.marison-directory__filter-grid { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.marison-form-control { display: grid; gap: var(--wp--preset--spacing--x-small); min-width: 0; }
+.marison-form-control > label { font-weight: 600; }
+.marison-form-control select { min-height: 2.75rem; width: 100%; border: 1px solid #59615b; border-radius: var(--wp--preset--spacing--x-small); padding: 0.625rem 0.75rem; background: var(--wp--preset--color--white); }
+.marison-directory__filter-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--wp--preset--spacing--small); }
+.marison-directory__filter-actions button,
+.marison-button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; border: 1px solid var(--wp--preset--color--deep-green); border-radius: var(--wp--preset--spacing--x-small); padding: 0.625rem 1rem; background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); font-weight: 600; text-decoration: none; cursor: pointer; }
+.marison-directory__filter-actions .marison-button--secondary { background: transparent; color: var(--wp--preset--color--deep-green); }
+.marison-directory__active { margin: 0; padding: var(--wp--preset--spacing--small) var(--wp--preset--spacing--medium); border-left: 0.25rem solid var(--wp--preset--color--deep-green); background: var(--wp--preset--color--soft-sage); }
+.marison-directory__results { display: grid; gap: var(--wp--preset--spacing--medium); }
+.marison-project-card__translation-note { color: #59615b; font-size: var(--wp--preset--font-size--small); }
+.marison-directory__empty { display: grid; gap: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--large); background: var(--wp--preset--color--white); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); border-radius: var(--wp--preset--spacing--small); }
+.marison-directory__empty h2,
+.marison-directory__empty p { margin: 0; }
+.marison-pagination ul { display: flex; flex-wrap: wrap; gap: var(--wp--preset--spacing--x-small); list-style: none; margin: 0; padding: 0; }
+.marison-pagination a { display: inline-flex; align-items: center; justify-content: center; min-width: 2.75rem; min-height: 2.75rem; border: 1px solid #59615b; border-radius: var(--wp--preset--spacing--x-small); padding-inline: 0.625rem; text-decoration: none; }
+.marison-pagination a[aria-current="page"] { background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); }
+
 @media (max-width: 781px) {
 	.marison-foundation-grid { grid-template-columns: 1fr; }
+	.marison-directory__filter-grid { grid-template-columns: 1fr; }
+	.marison-directory__filter-actions > * { width: 100%; }
 	.marison-image--hero { border-radius: var(--wp--preset--spacing--small); }
 	.marison-homepage .has-display-font-size { font-size: clamp(2rem, 10vw, 3rem); line-height: 1.1; }
 	.marison-homepage .has-large-font-size { font-size: 1.25rem !important; }
