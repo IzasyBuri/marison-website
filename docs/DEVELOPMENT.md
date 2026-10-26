@@ -356,6 +356,60 @@ destination; the Project page does not calculate installments. Location uses the
 existing City/Regency, Province, and address data. Interactive map providers are
 deferred because none is approved.
 
+## Careers v1 phase
+
+Careers uses one normal WordPress Page for discovery and one public
+`marison_career` CPT for vacancy details. Provision an Indonesian Page with the
+slug `karier`, insert the controlled **Marison Careers Content** pattern, and
+create/link its English translation through Polylang. Verify the actual English
+Page URL from that runtime; do not assume it is `/en/careers/`. The Page remains
+ordinary editable WordPress content after pattern insertion.
+
+Save **Settings → Permalinks** after provisioning or changing the Careers Page,
+then verify `/karier/`, the actual English Page URL, and native vacancy URLs at
+`/karier/[vacancy]/`. There is no Career archive, pagination, filter, search, or
+separate discovery endpoint. Open listing order is published date descending with
+Post ID descending as the deterministic tie-breaker.
+
+The only approved vacancy fields are:
+
+| Field | Language/scope | Contract |
+|---|---|---|
+| Status | Shared | `open` or `closed`; published vacancies require a valid value |
+| Application instructions | Language-specific | Escaped plain text; English never silently falls back to Indonesian |
+| Recruitment email | Shared | Validated email; used after an external URL |
+| External application URL | Shared | `http`/`https` only; used first |
+
+For an open vacancy, application precedence is external URL, recruitment email,
+current-language instructions, then an honest unconfigured state. Closed
+vacancies remain directly accessible with HTTP 200, show Closed, are excluded
+from `/karier/`, and show no application CTA or destination. External links must
+identify that they leave Marison; email links use `mailto:`; instructions are
+not rendered as fake buttons. Clicks are not recorded.
+
+`marison-core` owns the `marison_career` registration, custom capabilities,
+metadata, validation, publish integrity, explicit shared-meta synchronization,
+Polylang language policy, and public read model. The Marison theme owns the
+presentation. The single template keeps native `wp:post-title` as the only H1
+and native `wp:post-content` as the vacancy body owner, with only the structured
+Career application block between them. No applicant CPT/table, form, upload,
+CV processing, account, pipeline, ATS API, or applicant data is part of V1.
+
+When Polylang is inactive, Indonesian Careers listing/detail remains functional.
+When Polylang is active, English discovery includes only vacancies with a
+published English translation, while shared status/email/URL values synchronize
+through the explicit allowlist. Instructions, title, excerpt, and body remain
+language-specific editorial content.
+
+For local validation, use synthetic non-PII vacancies covering open, closed,
+external URL, email, instructions, no destination, missing English instructions,
+English-only translation, long content, and empty listing states. Confirm the
+Careers routes coexist with `/`, `/en/`, `/perumahan/`, Project detail, `/kpr/`,
+`/artikel/`, and Article detail. Remove all test Pages, vacancies, translations,
+users/roles, media, scripts, logs, caches, and screenshots afterward. Database
+content, Polylang relationships, Page assignments, and permalinks are local
+environment state; Git synchronizes source and documentation only.
+
 ## Lead and contact foundation phase
 
 The approved Lead/contact foundation adds a private prefixed Lead table, restricted

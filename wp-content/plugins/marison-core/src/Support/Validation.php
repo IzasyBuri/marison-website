@@ -13,12 +13,43 @@ use Marison\Core\Inventory\UnitRepository;
 
 final class Validation {
 	public const PROJECT_STATUSES = [ 'upcoming', 'ongoing', 'completed' ];
+	public const CAREER_STATUSES = [ 'open', 'closed' ];
 	public const AVAILABILITY_MODES = [ 'manual', 'units' ];
 	private static bool $enforcing_integrity = false;
 
 	public static function sanitize_project_status( $value ): string {
 		$value = sanitize_key( (string) $value );
 		return in_array( $value, self::PROJECT_STATUSES, true ) ? $value : '';
+	}
+
+	public static function sanitize_career_status( $value ): string {
+		$value = sanitize_key( (string) $value );
+		return in_array( $value, self::CAREER_STATUSES, true ) ? $value : '';
+	}
+
+	public static function sanitize_career_email( $value ): string {
+		$value = sanitize_email( (string) $value );
+		return is_email( $value ) ? $value : '';
+	}
+
+	public static function sanitize_career_external_url( $value ): string {
+		$raw = trim( (string) $value );
+		if ( '' === $raw || preg_match( '/\s/', $raw ) ) {
+			return '';
+		}
+
+		$raw_parts = wp_parse_url( $raw );
+		if ( ! is_array( $raw_parts ) || empty( $raw_parts['host'] ) || empty( $raw_parts['scheme'] ) || ! in_array( strtolower( $raw_parts['scheme'] ), [ 'http', 'https' ], true ) ) {
+			return '';
+		}
+
+		$value = esc_url_raw( $raw, [ 'http', 'https' ] );
+		$parts = wp_parse_url( $value );
+		if ( ! $value || ! is_array( $parts ) || empty( $parts['host'] ) || ! filter_var( $parts['host'], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME ) && ! filter_var( $parts['host'], FILTER_VALIDATE_IP ) ) {
+			return '';
+		}
+
+		return $value;
 	}
 
 	public static function sanitize_availability_mode( $value ): string {
@@ -141,6 +172,13 @@ final class Validation {
 		return $errors;
 	}
 
+	public static function career_errors( int $post_id ): array {
+		$status = get_post_meta( $post_id, Meta::CAREER_STATUS, true );
+		return in_array( $status, self::CAREER_STATUSES, true )
+			? []
+			: [ 'Career Vacancy wajib memiliki status Open atau Closed sebelum publish.' ];
+	}
+
 	public static function house_type_errors( int $post_id ): array {
 		$project_id = (int) get_post_meta( $post_id, Meta::HOUSE_TYPE_PROJECT, true );
 		return self::is_valid_post( $project_id, 'marison_project', true )
@@ -182,7 +220,7 @@ final class Validation {
 			return [];
 		}
 
-		$errors = 'marison_project' === $post_type ? self::project_errors( $post_id ) : ( 'marison_house_type' === $post_type ? self::house_type_errors( $post_id ) : ( 'marison_branch' === $post_type ? self::branch_errors( $post_id ) : [] ) );
+		$errors = 'marison_project' === $post_type ? self::project_errors( $post_id ) : ( 'marison_house_type' === $post_type ? self::house_type_errors( $post_id ) : ( 'marison_branch' === $post_type ? self::branch_errors( $post_id ) : ( 'marison_career' === $post_type ? self::career_errors( $post_id ) : [] ) ) );
 		if ( ! $errors ) {
 			return [];
 		}
@@ -208,6 +246,7 @@ final class Validation {
 		$gated_keys = [
 			'marison_project' => [ Meta::PROJECT_STATUS, Meta::PROJECT_PRIMARY_BRANCH, Meta::PROJECT_AVAILABILITY_MODE ],
 			'marison_house_type' => [ Meta::HOUSE_TYPE_PROJECT ],
+			'marison_career' => [ Meta::CAREER_STATUS ],
 		];
 		if ( isset( $gated_keys[ $post_type ] ) && in_array( $meta_key, $gated_keys[ $post_type ], true ) ) {
 			self::enforce_published_integrity( $post_id, $post_type );

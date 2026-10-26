@@ -67,6 +67,41 @@ Text Domain: marison
 .marison-language-switcher { display: inline-flex; gap: var(--wp--preset--spacing--x-small); align-items: center; font-size: var(--wp--preset--font-size--small); }
 .marison-site-header { border-bottom: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 18%, transparent); }
 .marison-site-footer { padding-block: var(--wp--preset--spacing--large); }
+.marison-career-page,
+.marison-career-template { width: 100%; max-width: none !important; overflow: hidden; }
+.marison-career-page > .wp-block-post-title,
+.marison-career-template > .wp-block-post-title { box-sizing: border-box; width: 100% !important; max-width: none !important; margin-inline: 0 !important; padding: var(--wp--preset--spacing--xx-large) max(1rem, calc((100vw - 1200px) / 2)) var(--wp--preset--spacing--large); font-size: var(--wp--preset--font-size--display); line-height: 1.08; overflow-wrap: break-word; }
+.marison-career-content { padding-block: var(--wp--preset--spacing--large) var(--wp--preset--spacing--xx-large); }
+.marison-career-content__intro,
+.marison-career-list,
+.marison-career-application,
+.marison-career-template > .wp-block-post-content,
+.marison-career-template > .wp-block-marison-navigation-link { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
+.marison-career-content__intro { width: min(1200px, calc(100% - 2rem)) !important; max-width: 1200px !important; margin-bottom: var(--wp--preset--spacing--large); }
+.marison-career-page > .wp-block-post-content { width: 100%; max-width: none !important; }
+.marison-career-page > .wp-block-post-content > p { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin: 0 auto var(--wp--preset--spacing--large); }
+.marison-career-content__intro > :last-child { margin-bottom: 0; }
+.marison-career-list { display: grid; gap: var(--wp--preset--spacing--medium); }
+.marison-career-list > h2 { margin: 0; }
+.marison-career-list__grid { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.marison-career-card { height: 100%; }
+.marison-career-card h3 { margin: 0; line-height: 1.2; overflow-wrap: break-word; }
+.marison-career-card p { margin: 0; }
+.marison-career-card .marison-card__content { align-content: start; }
+.marison-career-list__empty { display: grid; gap: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--large); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); border-radius: var(--wp--preset--spacing--small); background: var(--wp--preset--color--white); }
+.marison-career-list__empty > :where(p) { margin: 0; }
+.marison-career-list__empty-title { font-weight: 700; }
+.marison-career-application { display: grid; gap: var(--wp--preset--spacing--medium); margin-bottom: var(--wp--preset--spacing--large); padding: var(--wp--preset--spacing--medium); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 25%, transparent); border-left: .35rem solid var(--wp--preset--color--primary-green); border-radius: var(--wp--preset--spacing--small); background: var(--wp--preset--color--soft-sage); }
+.marison-career-application__status { display: flex; align-items: center; gap: var(--wp--preset--spacing--small); }
+.marison-career-application__destination > :where(p, div) { margin: 0; }
+.marison-career-application__instructions { display: grid; gap: var(--wp--preset--spacing--small); }
+.marison-career-application__instructions h2 { margin: 0; font-size: var(--wp--preset--font-size--h3); }
+.marison-career-template > .wp-block-post-content { width: min(720px, calc(100% - 2rem)); max-width: 720px !important; margin-bottom: var(--wp--preset--spacing--x-large); }
+.marison-career-template > .wp-block-marison-navigation-link { margin-bottom: var(--wp--preset--spacing--xx-large); }
+.marison-status--career-open { color: #17643e; background: #e8f4ec; }
+.marison-status--career-closed { color: #59615b; background: #eef0ed; }
+body:has(.marison-career-page) .marison-site-footer a,
+body:has(.marison-career-template) .marison-site-footer a { color: var(--wp--preset--color--soft-sage); }
 .marison-home-hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--wp--preset--spacing--large); padding-block: var(--wp--preset--spacing--xx-large); }
 .marison-home-hero__media { min-height: 18rem; }
 .marison-home-section { padding-block: var(--wp--preset--spacing--x-large); }
@@ -312,6 +347,9 @@ Text Domain: marison
 	.marison-article-cta { padding: var(--wp--preset--spacing--medium); }
 	.marison-directory__filter-grid { grid-template-columns: 1fr; }
 	.marison-directory__filter-actions > * { width: 100%; }
+	.marison-career-list__grid { grid-template-columns: 1fr; }
+	.marison-career-page > .wp-block-post-title,
+	.marison-career-template > .wp-block-post-title { padding-block: var(--wp--preset--spacing--x-large) var(--wp--preset--spacing--medium); font-size: clamp(2rem, 10vw, 3rem); }
 	.marison-image--hero { border-radius: var(--wp--preset--spacing--small); }
 	.marison-homepage .has-display-font-size { font-size: clamp(2rem, 10vw, 3rem); line-height: 1.1; }
 	.marison-homepage .has-large-font-size { font-size: 1.25rem !important; }
