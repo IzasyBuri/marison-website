@@ -22,6 +22,35 @@ final class MetaBoxes {
 		add_meta_box( 'marison_house_type_details', 'Informasi House Type', [ self::class, 'render_house_type' ], 'marison_house_type', 'normal', 'high' );
 		add_meta_box( 'marison_branch_contact', 'Kontak Publik Branch', [ self::class, 'render_branch' ], 'marison_branch', 'normal', 'high' );
 		add_meta_box( 'marison_article_projects', 'Project Terkait', [ self::class, 'render_article_projects' ], 'post', 'side', 'default' );
+		add_meta_box( 'marison_career_details', 'Career Vacancy', [ self::class, 'render_career' ], 'marison_career', 'normal', 'high' );
+	}
+
+	public static function render_career( \WP_Post $post ): void {
+		self::nonce();
+		$status = get_post_meta( $post->ID, Meta::CAREER_STATUS, true );
+		$instructions = get_post_meta( $post->ID, Meta::CAREER_APPLICATION_INSTRUCTIONS, true );
+		$email = get_post_meta( $post->ID, Meta::CAREER_RECRUITMENT_EMAIL, true );
+		$url = get_post_meta( $post->ID, Meta::CAREER_EXTERNAL_URL, true );
+		?>
+		<p><label for="marison_career_status"><strong>Status Vacancy</strong></label></p>
+		<select class="widefat" id="marison_career_status" name="marison_career_status">
+			<option value="">Pilih status sebelum publish</option>
+			<option value="open" <?php selected( $status, 'open' ); ?>>Open</option>
+			<option value="closed" <?php selected( $status, 'closed' ); ?>>Closed</option>
+		</select>
+		<p class="description">Vacancy tanpa status tidak dapat tetap published.</p>
+
+		<p><label for="marison_career_application_instructions"><strong>Application instructions</strong></label></p>
+		<textarea class="widefat" id="marison_career_application_instructions" name="marison_career_application_instructions" rows="5"><?php echo esc_textarea( $instructions ); ?></textarea>
+		<p class="description">Instruksi ini spesifik untuk bahasa Vacancy saat ini.</p>
+
+		<p><label for="marison_career_recruitment_email"><strong>Recruitment email</strong></label></p>
+		<input class="widefat" id="marison_career_recruitment_email" name="marison_career_recruitment_email" type="email" value="<?php echo esc_attr( $email ); ?>" />
+
+		<p><label for="marison_career_external_url"><strong>External application URL</strong></label></p>
+		<input class="widefat" id="marison_career_external_url" name="marison_career_external_url" type="url" value="<?php echo esc_attr( $url ); ?>" />
+		<p class="description">Gunakan URL http atau https. URL ini menjadi tujuan aplikasi utama.</p>
+		<?php
 	}
 
 	public static function render_project_details( \WP_Post $post ): void {
@@ -234,7 +263,7 @@ final class MetaBoxes {
 	}
 
 	public static function save( int $post_id, \WP_Post $post, bool $update = false ): void {
-		if ( ! in_array( $post->post_type, [ 'marison_project', 'marison_house_type', 'marison_branch', 'post' ], true ) ) {
+		if ( ! in_array( $post->post_type, [ 'marison_project', 'marison_house_type', 'marison_branch', 'marison_career', 'post' ], true ) ) {
 			return;
 		}
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE || wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
@@ -253,6 +282,9 @@ final class MetaBoxes {
 				case 'marison_branch':
 					self::save_branch( $post_id );
 					break;
+				case 'marison_career':
+					self::save_career( $post_id );
+					break;
 				case 'post':
 					self::save_article_projects( $post_id );
 					break;
@@ -263,6 +295,16 @@ final class MetaBoxes {
 		}
 
 		self::enforce_publish_gate( $post_id, $post->post_type );
+	}
+
+	private static function save_career( int $post_id ): void {
+		$raw_status = isset( $_POST['marison_career_status'] ) ? wp_unslash( $_POST['marison_career_status'] ) : '';
+		$status = Validation::sanitize_career_status( $raw_status );
+		self::save_or_delete( $post_id, Meta::CAREER_STATUS, $status, '' !== (string) $raw_status && '' === $status ? 'Status Career tidak valid dan tidak disimpan.' : '' );
+
+		self::save_text( $post_id, Meta::CAREER_APPLICATION_INSTRUCTIONS, 'marison_career_application_instructions', true );
+		self::save_text( $post_id, Meta::CAREER_RECRUITMENT_EMAIL, 'marison_career_recruitment_email', false, [ Validation::class, 'sanitize_career_email' ] );
+		self::save_text( $post_id, Meta::CAREER_EXTERNAL_URL, 'marison_career_external_url', false, [ Validation::class, 'sanitize_career_external_url' ] );
 	}
 
 	private static function save_project( int $post_id ): void {

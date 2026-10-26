@@ -49,6 +49,8 @@ final class Polylang {
 			$shared = [ Meta::HOUSE_TYPE_PROJECT, Meta::HOUSE_TYPE_BUILDING_AREA, Meta::HOUSE_TYPE_LAND_AREA, Meta::HOUSE_TYPE_BEDROOMS, Meta::HOUSE_TYPE_BATHROOMS, Meta::HOUSE_TYPE_FLOORS, '_thumbnail_id' ];
 		} elseif ( 'post' === $from_type ) {
 			$shared = [ Meta::ARTICLE_PROJECTS ];
+		} elseif ( 'marison_career' === $from_type ) {
+			$shared = [ Meta::CAREER_STATUS, Meta::CAREER_RECRUITMENT_EMAIL, Meta::CAREER_EXTERNAL_URL ];
 		}
 		return array_values( array_unique( array_merge( $metas, $shared ) ) );
 	}

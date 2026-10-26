@@ -48,6 +48,43 @@ final class ContentTypes {
 		);
 
 		register_post_type(
+			'marison_career',
+			[
+				'labels' => [
+					'name' => 'Career Vacancies',
+					'singular_name' => 'Career Vacancy',
+					'menu_name' => 'Career Vacancies',
+					'name_admin_bar' => 'Career Vacancy',
+					'add_new' => 'Tambah Vacancy',
+					'add_new_item' => 'Tambah Career Vacancy',
+					'edit_item' => 'Edit Career Vacancy',
+					'new_item' => 'Career Vacancy Baru',
+					'view_item' => 'Lihat Career Vacancy',
+					'search_items' => 'Cari Career Vacancy',
+					'not_found' => 'Career Vacancy belum tersedia.',
+					'not_found_in_trash' => 'Tidak ada Career Vacancy di tempat sampah.',
+				],
+				'public' => true,
+				'publicly_queryable' => true,
+				'show_ui' => true,
+				'show_in_menu' => true,
+				'show_in_rest' => false,
+				'show_in_nav_menus' => false,
+				'exclude_from_search' => true,
+				'has_archive' => false,
+				'rewrite' => [
+					'slug' => 'karier',
+					'with_front' => false,
+				],
+				'query_var' => true,
+				'supports' => [ 'title', 'editor', 'excerpt', 'revisions' ],
+				'capability_type' => [ 'marison_career', 'marison_careers' ],
+				'map_meta_cap' => true,
+				'menu_icon' => 'dashicons-businessperson',
+			]
+		);
+
+		register_post_type(
 			'marison_house_type',
 			[
 				'labels' => [

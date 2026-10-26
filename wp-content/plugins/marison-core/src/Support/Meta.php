@@ -29,6 +29,10 @@ final class Meta {
 	public const BRANCH_WHATSAPP = '_marison_branch_whatsapp';
 	public const BRANCH_TELEPHONE = '_marison_branch_telephone';
 	public const ARTICLE_PROJECTS = '_marison_article_projects';
+	public const CAREER_STATUS = '_marison_career_status';
+	public const CAREER_APPLICATION_INSTRUCTIONS = '_marison_career_application_instructions';
+	public const CAREER_RECRUITMENT_EMAIL = '_marison_career_recruitment_email';
+	public const CAREER_EXTERNAL_URL = '_marison_career_external_url';
 
 	public static function register(): void {
 		self::register_meta( 'marison_project', self::PROJECT_STATUS, 'string', [ Validation::class, 'sanitize_project_status' ] );
@@ -52,6 +56,10 @@ final class Meta {
 		self::register_meta( 'marison_branch', self::BRANCH_WHATSAPP, 'string', [ Validation::class, 'sanitize_contact_number' ] );
 		self::register_meta( 'marison_branch', self::BRANCH_TELEPHONE, 'string', [ Validation::class, 'sanitize_contact_number' ] );
 		self::register_meta( 'post', self::ARTICLE_PROJECTS, 'array', [ Validation::class, 'sanitize_article_project_ids' ], [] );
+		self::register_meta( 'marison_career', self::CAREER_STATUS, 'string', [ Validation::class, 'sanitize_career_status' ] );
+		self::register_meta( 'marison_career', self::CAREER_APPLICATION_INSTRUCTIONS, 'string', 'sanitize_textarea_field' );
+		self::register_meta( 'marison_career', self::CAREER_RECRUITMENT_EMAIL, 'string', [ Validation::class, 'sanitize_career_email' ] );
+		self::register_meta( 'marison_career', self::CAREER_EXTERNAL_URL, 'string', [ Validation::class, 'sanitize_career_external_url' ] );
 
 		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_state', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_state' ] );
 		self::register_meta( 'marison_kpr_scheme', '_marison_kpr_annual_rate', 'string', [ \Marison\Core\KPR\SchemeRules::class, 'sanitize_rate' ] );

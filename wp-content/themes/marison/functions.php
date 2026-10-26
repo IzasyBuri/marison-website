@@ -67,8 +67,74 @@ add_action(
 		register_block_type( 'marison/article-featured-image', [ 'render_callback' => 'marison_render_article_featured_image' ] );
 		register_block_type( 'marison/article-related-projects', [ 'render_callback' => 'marison_render_article_related_projects' ] );
 		register_block_type( 'marison/navigation-link', [ 'render_callback' => 'marison_render_navigation_link', 'attributes' => [ 'label_key' => [ 'type' => 'string' ], 'path' => [ 'type' => 'string' ], 'variant' => [ 'type' => 'string' ] ] ] );
+		register_block_type( 'marison/career-list', [ 'render_callback' => 'marison_render_career_list' ] );
+		register_block_type( 'marison/career-application', [ 'render_callback' => 'marison_render_career_application' ] );
 	}
 );
+
+function marison_career_language(): string {
+	return class_exists( '\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::current_language() : 'id';
+}
+
+function marison_career_label( string $key, string $language = '' ): string {
+	$labels = [
+		'heading' => [ 'id' => 'Lowongan yang tersedia', 'en' => 'Open vacancies' ],
+		'empty_title' => [ 'id' => 'Belum ada lowongan yang tersedia.', 'en' => 'No open vacancies are available yet.' ],
+		'empty_text' => [ 'id' => 'Silakan kembali lagi untuk melihat peluang baru bersama Marison.', 'en' => 'Please check back later for new opportunities with Marison.' ],
+		'status' => [ 'id' => 'Status lowongan', 'en' => 'Vacancy status' ],
+		'closed_text' => [ 'id' => 'Lamaran untuk lowongan ini sudah ditutup.', 'en' => 'Applications for this vacancy are closed.' ],
+		'external' => [ 'id' => 'Lamar melalui situs eksternal (meninggalkan Marison)', 'en' => 'Apply externally (leaves Marison)' ],
+		'email' => [ 'id' => 'Hubungi recruitment melalui email', 'en' => 'Email recruitment' ],
+		'instructions' => [ 'id' => 'Cara melamar', 'en' => 'How to apply' ],
+		'none' => [ 'id' => 'Informasi lamaran belum dikonfigurasi.', 'en' => 'Application details are not configured yet.' ],
+	];
+	$language = 'en' === ( $language ?: marison_career_language() ) ? 'en' : 'id';
+	return $labels[ $key ][ $language ] ?? '';
+}
+
+function marison_career_view_model(): array {
+	$class = '\\Marison\\Core\\Presentation\\Career';
+	return class_exists( $class ) ? $class::open_vacancies() : [];
+}
+
+function marison_render_career_list(): string {
+	$vacancies = marison_career_view_model();
+	$heading_id = 'marison-career-list-heading';
+	$output = '<section class="marison-career-list" aria-labelledby="' . esc_attr( $heading_id ) . '"><h2 id="' . esc_attr( $heading_id ) . '">' . esc_html( marison_career_label( 'heading' ) ) . '</h2>';
+	if ( ! $vacancies ) {
+		return $output . '<div class="marison-career-list__empty" role="status"><p class="marison-career-list__empty-title">' . esc_html( marison_career_label( 'empty_title' ) ) . '</p><p>' . esc_html( marison_career_label( 'empty_text' ) ) . '</p></div></section>';
+	}
+
+	$output .= '<div class="marison-career-list__grid">';
+	foreach ( $vacancies as $vacancy ) {
+		$output .= '<article class="marison-card marison-career-card"><div class="marison-card__content"><p><span class="marison-status marison-status--career-open">' . esc_html( $vacancy['status_label'] ?? '' ) . '</span></p><h3>' . esc_html( $vacancy['title'] ?? '' ) . '</h3><p>' . esc_html( $vacancy['excerpt'] ?? '' ) . '</p><p><a class="marison-button marison-button--primary" href="' . esc_url( $vacancy['url'] ?? '' ) . '">' . esc_html( 'en' === marison_career_language() ? 'View vacancy' : 'Lihat lowongan' ) . '</a></p></div></article>';
+	}
+	return $output . '</div></section>';
+}
+
+function marison_render_career_application(): string {
+	$class = '\\Marison\\Core\\Presentation\\Career';
+	$view = class_exists( $class ) ? $class::detail_state( get_queried_object_id() ) : [];
+	if ( ! $view ) {
+		return '';
+	}
+
+	$application = $view['application'] ?? [];
+	$language = (string) ( $view['language'] ?? marison_career_language() );
+	$status_class = 'closed' === ( $view['status'] ?? '' ) ? 'marison-status--career-closed' : 'marison-status--career-open';
+	$output = '<section class="marison-career-application" aria-labelledby="marison-career-application-heading"><div class="marison-career-application__status"><span class="marison-status ' . esc_attr( $status_class ) . '">' . esc_html( $view['status_label'] ?? '' ) . '</span><span class="screen-reader-text">' . esc_html( marison_career_label( 'status', $language ) ) . '</span></div>';
+	$output .= '<div class="marison-career-application__destination">';
+	if ( 'closed' === ( $application['kind'] ?? '' ) ) {
+		$output .= '<p id="marison-career-application-heading" class="marison-career-application__message">' . esc_html( marison_career_label( 'closed_text', $language ) ) . '</p>';
+	} elseif ( 'external' === ( $application['kind'] ?? '' ) || 'email' === ( $application['kind'] ?? '' ) ) {
+		$output .= '<p id="marison-career-application-heading"><a class="marison-button marison-button--primary" href="' . esc_url( $application['url'] ?? '' ) . '"' . ( 'external' === $application['kind'] ? ' target="_blank" rel="noopener noreferrer"' : '' ) . '>' . esc_html( 'external' === $application['kind'] ? marison_career_label( 'external', $language ) : marison_career_label( 'email', $language ) ) . '</a></p>';
+	} elseif ( 'instructions' === ( $application['kind'] ?? '' ) ) {
+		$output .= '<div id="marison-career-application-heading" class="marison-career-application__instructions"><h2>' . esc_html( marison_career_label( 'instructions', $language ) ) . '</h2><p>' . nl2br( esc_html( $application['instructions'] ?? '' ) ) . '</p></div>';
+	} else {
+		$output .= '<p id="marison-career-application-heading" class="marison-career-application__message">' . esc_html( marison_career_label( 'none', $language ) ) . '</p>';
+	}
+	return $output . '</div></section>';
+}
 
 add_action(
 	'pre_get_posts',
@@ -387,6 +453,14 @@ function marison_render_navigation_link( array $attributes ): string {
 	$label = $keys[ $key ][ 'en' === $language ? 'en' : 'id' ] ?? sanitize_text_field( $attributes['label_key'] ?? '' );
 	$path = sanitize_text_field( $attributes['path'] ?? '/' );
 	$url = class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::localized_url( $path ) : home_url( $path );
+	if ( '/karier/' === trailingslashit( $path ) && is_singular( 'marison_career' ) && class_exists( '\\Marison\\Core\\Presentation\\Career' ) ) {
+		$career = \Marison\Core\Presentation\Career::detail_state( get_queried_object_id() );
+		if ( $career ) {
+			$language = (string) ( $career['language'] ?? $language );
+			$label = 'en' === $language ? 'Careers' : 'Karier';
+			$url = (string) ( $career['careers_url'] ?? $url );
+		}
+	}
 	$variant = 'button' === ( $attributes['variant'] ?? '' ) ? ' class="wp-block-button__link wp-element-button"' : '';
 	return '<a href="' . esc_url( $url ) . '"' . $variant . '>' . esc_html( $label ) . '</a>';
 }
