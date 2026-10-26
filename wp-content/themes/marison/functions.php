@@ -7,6 +7,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/inc/project-detail.php';
+
 add_action(
 	'after_setup_theme',
 	static function (): void {
@@ -18,6 +20,9 @@ add_action(
 	'wp_enqueue_scripts',
 	static function (): void {
 		wp_enqueue_style( 'marison-foundation', get_stylesheet_uri(), [], wp_get_theme()->get( 'Version' ) );
+		if ( is_singular( 'marison_project' ) ) {
+			wp_enqueue_script( 'marison-project-detail', get_theme_file_uri( 'assets/project-detail.js' ), [], wp_get_theme()->get( 'Version' ), true );
+		}
 	}
 );
 
@@ -28,6 +33,7 @@ add_action(
 		register_block_type( 'marison/homepage-locations', [ 'render_callback' => 'marison_render_homepage_locations' ] );
 		register_block_type( 'marison/homepage-articles', [ 'render_callback' => 'marison_render_homepage_articles' ] );
 		register_block_type( 'marison/housing-directory', [ 'render_callback' => 'marison_render_housing_directory' ] );
+		register_block_type( 'marison/project-detail', [ 'render_callback' => 'marison_render_project_detail' ] );
 		register_block_type( 'marison/navigation-link', [ 'render_callback' => 'marison_render_navigation_link', 'attributes' => [ 'label_key' => [ 'type' => 'string' ], 'path' => [ 'type' => 'string' ], 'variant' => [ 'type' => 'string' ] ] ] );
 	}
 );

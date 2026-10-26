@@ -24,6 +24,7 @@ require_once __DIR__ . '/Multilingual/Polylang.php';
 require_once __DIR__ . '/Multilingual/Resolver.php';
 require_once __DIR__ . '/Presentation/Homepage.php';
 require_once __DIR__ . '/Presentation/Directory.php';
+require_once __DIR__ . '/Presentation/ProjectDetail.php';
 require_once __DIR__ . '/Admin/KPRSchemes.php';
 require_once __DIR__ . '/Leads/LeadRules.php';
 require_once __DIR__ . '/Leads/LeadRepository.php';

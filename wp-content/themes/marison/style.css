@@ -98,6 +98,121 @@ Text Domain: marison
 .marison-pagination a { display: inline-flex; align-items: center; justify-content: center; min-width: 2.75rem; min-height: 2.75rem; border: 1px solid #59615b; border-radius: var(--wp--preset--spacing--x-small); padding-inline: 0.625rem; text-decoration: none; }
 .marison-pagination a[aria-current="page"] { background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); }
 
+.marison-project-template { width: 100%; }
+.marison-project-detail { display: grid; gap: 0; min-width: 0; }
+.marison-project-detail > :where(.marison-project-detail__section, .marison-project-detail__quick-summary) { width: 100% !important; max-width: none !important; margin-inline: 0 !important; }
+.marison-project-detail > :where(.marison-project-detail__hero, .marison-project-detail__breadcrumbs) { max-width: none !important; }
+.marison-project-detail__breadcrumbs,
+.marison-project-detail__section-inner,
+.marison-project-detail__quick-summary,
+.marison-project-detail__hero { width: min(1200px, calc(100vw - 2rem)); margin-inline: auto; }
+.marison-project-detail__section-inner { margin-inline: auto !important; }
+.marison-project-detail__breadcrumbs { padding-block: var(--wp--preset--spacing--medium); font-size: var(--wp--preset--font-size--small); }
+.marison-project-detail__breadcrumbs ol { display: flex; flex-wrap: wrap; gap: .35rem .7rem; list-style: none; margin: 0; padding: 0; }
+.marison-project-detail__breadcrumbs li:not(:last-child)::after { content: "/"; margin-left: .7rem; color: #6e756d; }
+.marison-project-detail__hero { display: grid; gap: 0; overflow: hidden; background: var(--wp--preset--color--white); border-radius: var(--wp--preset--spacing--medium); }
+.marison-project-detail__hero-media { min-width: 0; }
+.marison-project-detail__hero-image { display: block; width: 100%; height: 100%; min-height: 18rem; aspect-ratio: 3 / 2; object-fit: cover; }
+.marison-project-detail__hero-content { display: grid; align-content: center; gap: var(--wp--preset--spacing--small); padding: var(--wp--preset--spacing--large); }
+.marison-project-detail__hero-content h1,
+.marison-project-detail__hero-content p { margin: 0; }
+.marison-project-detail__hero-content h1 { font-size: var(--wp--preset--font-size--h1); line-height: 1.08; }
+.marison-project-detail__location { color: var(--wp--preset--color--deep-green); font-weight: 600; }
+.marison-project-detail__summary { max-width: 65ch; }
+.marison-project-detail__actions { display: flex; flex-wrap: wrap; gap: var(--wp--preset--spacing--small); align-items: center; }
+.marison-button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; border: 1px solid var(--wp--preset--color--deep-green); border-radius: var(--wp--preset--spacing--x-small); padding: .625rem 1rem; font-weight: 600; text-decoration: none; }
+.marison-button--primary { background: var(--wp--preset--color--primary-green); color: var(--wp--preset--color--white); border-color: var(--wp--preset--color--primary-green); }
+.marison-button--secondary { background: transparent; color: var(--wp--preset--color--deep-green); }
+.marison-project-detail__translation-note { color: #59615b; font-size: var(--wp--preset--font-size--small); }
+.marison-project-detail__quick-summary { box-sizing: border-box; margin-block: var(--wp--preset--spacing--large); padding: var(--wp--preset--spacing--medium); background: var(--wp--preset--color--white); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); border-radius: var(--wp--preset--spacing--small); }
+.marison-project-detail__quick-summary dl { display: grid; gap: var(--wp--preset--spacing--medium); margin: 0; }
+.marison-project-detail__quick-summary dt,
+.marison-project-detail__specs dt { color: #59615b; font-size: var(--wp--preset--font-size--small); }
+.marison-project-detail__quick-summary dd,
+.marison-project-detail__specs dd { margin: .25rem 0 0; font-weight: 600; }
+.marison-project-detail__section { padding-block: var(--wp--preset--spacing--x-large); }
+.marison-project-detail__section-inner { min-width: 0; }
+.marison-project-detail__section h2 { margin-block: 0 var(--wp--preset--spacing--small); }
+.marison-project-detail__eyebrow { margin: 0 0 var(--wp--preset--spacing--x-small); color: var(--wp--preset--color--primary-green); font-size: var(--wp--preset--font-size--small); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.marison-project-detail__content { max-width: 75ch; }
+.marison-project-detail__content > :first-child { margin-top: 0; }
+.marison-project-detail__content > :last-child { margin-bottom: 0; }
+.marison-project-detail__house-types { background: var(--wp--preset--color--warm-cream); }
+.marison-project-detail__house-type-grid { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.marison-project-detail__house-type { min-width: 0; background: var(--wp--preset--color--white); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); border-radius: var(--wp--preset--spacing--small); overflow: hidden; }
+.marison-project-detail__house-type summary { display: grid; gap: var(--wp--preset--spacing--small); cursor: pointer; list-style: none; padding: var(--wp--preset--spacing--medium); }
+.marison-project-detail__house-type summary::-webkit-details-marker { display: none; }
+.marison-project-detail__house-type-summary { display: flex; justify-content: space-between; gap: var(--wp--preset--spacing--small); align-items: baseline; }
+.marison-project-detail__house-type-title { font-size: var(--wp--preset--font-size--large); font-weight: 700; }
+.marison-project-detail__house-type-link { color: var(--wp--preset--color--primary-green); font-size: var(--wp--preset--font-size--small); font-weight: 600; }
+.marison-project-detail__house-type-image { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.marison-project-detail__specs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--wp--preset--spacing--small); margin: 0; }
+.marison-project-detail__house-type-details { padding: 0 var(--wp--preset--spacing--medium) var(--wp--preset--spacing--medium); }
+.marison-project-detail__house-type-details > :first-child { margin-top: 0; }
+.marison-project-detail__notice { padding: var(--wp--preset--spacing--medium); background: var(--wp--preset--color--white); border-left: .25rem solid var(--wp--preset--color--muted-gray); }
+.marison-project-detail__availability { background: var(--wp--preset--color--soft-sage); }
+.marison-project-detail__availability-summary { display: grid; gap: var(--wp--preset--spacing--small); grid-template-columns: repeat(3, minmax(0, 1fr)); margin: var(--wp--preset--spacing--medium) 0; }
+.marison-project-detail__availability-item { display: flex; gap: .65rem; align-items: center; padding: var(--wp--preset--spacing--small); background: var(--wp--preset--color--white); border-radius: var(--wp--preset--spacing--x-small); }
+.marison-project-detail__availability-item dt { font-size: var(--wp--preset--font-size--large); }
+.marison-project-detail__availability-item dd { margin: 0; font-weight: 600; }
+.marison-project-detail__source-note,
+.marison-project-detail__supporting-note { color: #4e554f; font-size: var(--wp--preset--font-size--small); }
+.marison-project-detail__unit-list { margin-top: var(--wp--preset--spacing--large); }
+.marison-project-detail__unit-list ul { display: grid; gap: .5rem; list-style: none; margin: 0; padding: 0; }
+.marison-project-detail__unit-list li { display: flex; justify-content: space-between; gap: var(--wp--preset--spacing--small); align-items: center; padding: .75rem 1rem; background: var(--wp--preset--color--white); border-bottom: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 18%, transparent); }
+.marison-project-detail__unit-type { color: #59615b; font-size: var(--wp--preset--font-size--small); }
+.marison-project-detail__unit-pagination ul { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; margin: var(--wp--preset--spacing--medium) 0 0; padding: 0; }
+.marison-project-detail__unit-pagination a { display: inline-flex; min-width: 2.75rem; min-height: 2.75rem; align-items: center; justify-content: center; border: 1px solid #59615b; border-radius: var(--wp--preset--spacing--x-small); text-decoration: none; }
+.marison-project-detail__unit-pagination a[aria-current="page"] { background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); }
+.marison-project-detail__facility-list { display: grid; gap: var(--wp--preset--spacing--small); grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+.marison-project-detail__facility-list li { padding: var(--wp--preset--spacing--small) 0; border-bottom: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 22%, transparent); }
+.marison-project-detail__progress-row { display: flex; gap: var(--wp--preset--spacing--medium); align-items: center; max-width: 48rem; }
+.marison-project-detail__progress-row progress { width: 100%; height: .75rem; accent-color: var(--wp--preset--color--primary-green); }
+.marison-project-detail__location-section { background: var(--wp--preset--color--white); }
+.marison-project-detail__location-grid { display: grid; gap: var(--wp--preset--spacing--large); grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
+.marison-project-detail__map-placeholder { display: grid; min-height: 12rem; place-items: center; border: 1px dashed #59615b; background: var(--wp--preset--color--warm-cream); color: #59615b; }
+.marison-project-detail__article-grid { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.marison-project-detail__article-card h3 { margin-top: 0; }
+.marison-project-detail__kpr { background: var(--wp--preset--color--warm-cream); }
+.marison-project-detail__contact { background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); }
+.marison-project-detail__contact .marison-project-detail__eyebrow { color: var(--wp--preset--color--fresh-green); }
+.marison-project-detail__contact .marison-button--secondary { border-color: var(--wp--preset--color--white); color: var(--wp--preset--color--white); }
+.marison-project-detail__contact-value { color: var(--wp--preset--color--soft-sage); }
+.marison-project-detail__contact .marison-project-detail__notice { color: var(--wp--preset--color--charcoal); }
+.marison-project-detail__sticky { display: none; }
+
+@media (min-width: 782px) {
+	.marison-project-detail__hero { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
+	.marison-project-detail__hero-content { padding: var(--wp--preset--spacing--x-large); }
+	.marison-project-detail__quick-summary dl { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 781px) {
+	.marison-project-detail__breadcrumbs,
+	.marison-project-detail__section-inner,
+	.marison-project-detail__quick-summary,
+	.marison-project-detail__hero { width: min(100% - 2rem, 1200px); }
+	.marison-project-detail__hero { border-radius: var(--wp--preset--spacing--small); }
+	.marison-project-detail__hero-image { min-height: 12rem; aspect-ratio: 16 / 10; }
+	.marison-project-detail__hero-content { padding: var(--wp--preset--spacing--medium); }
+	.marison-project-detail__hero-content h1 { font-size: clamp(2rem, 9vw, 3rem); }
+	.marison-project-detail__hero-content .marison-project-detail__actions > * { flex: 1 1 100%; }
+	.marison-project-detail__quick-summary { margin-block: var(--wp--preset--spacing--medium); }
+	.marison-project-detail__quick-summary dl,
+	.marison-project-detail__house-type-grid,
+	.marison-project-detail__location-grid,
+	.marison-project-detail__article-grid { grid-template-columns: 1fr; }
+	.marison-project-detail__section { padding-block: var(--wp--preset--spacing--large); }
+	.marison-project-detail__specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.marison-project-detail__availability-summary { grid-template-columns: 1fr; }
+	.marison-project-detail__facility-list { grid-template-columns: 1fr; }
+	.marison-project-detail__unit-list li { align-items: flex-start; flex-direction: column; }
+	.marison-project-detail.has-project-sticky { padding-bottom: 5rem; }
+	.marison-project-detail__sticky { position: fixed; z-index: 20; right: 0; bottom: 0; left: 0; display: block; padding: .625rem max(1rem, env(safe-area-inset-left)) calc(.625rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-right)); border-top: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 30%, transparent); background: var(--wp--preset--color--white); box-shadow: 0 -4px 20px rgba(18, 61, 42, .12); }
+	.marison-project-detail__sticky > div { display: grid; gap: .5rem; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); max-width: 1200px; margin-inline: auto; }
+	.marison-project-detail__sticky .marison-button { min-height: 2.75rem; padding-inline: .625rem; font-size: var(--wp--preset--font-size--small); }
+}
+
 @media (max-width: 781px) {
 	.marison-foundation-grid { grid-template-columns: 1fr; }
 	.marison-directory__filter-grid { grid-template-columns: 1fr; }

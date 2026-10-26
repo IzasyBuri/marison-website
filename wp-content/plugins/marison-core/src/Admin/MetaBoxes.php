@@ -21,6 +21,7 @@ final class MetaBoxes {
 		add_meta_box( 'marison_project_operations', 'Relasi Operasional Project', [ self::class, 'render_project_operations' ], 'marison_project', 'side', 'high' );
 		add_meta_box( 'marison_house_type_details', 'Informasi House Type', [ self::class, 'render_house_type' ], 'marison_house_type', 'normal', 'high' );
 		add_meta_box( 'marison_branch_contact', 'Kontak Publik Branch', [ self::class, 'render_branch' ], 'marison_branch', 'normal', 'high' );
+		add_meta_box( 'marison_article_projects', 'Project Terkait', [ self::class, 'render_article_projects' ], 'post', 'side', 'default' );
 	}
 
 	public static function render_project_details( \WP_Post $post ): void {
@@ -174,6 +175,29 @@ final class MetaBoxes {
 		<?php
 	}
 
+	public static function render_article_projects( \WP_Post $post ): void {
+		self::nonce();
+		$selected = get_post_meta( $post->ID, Meta::ARTICLE_PROJECTS, true );
+		$selected = is_array( $selected ) ? array_map( 'absint', $selected ) : [];
+		$args = [
+			'post_type' => 'marison_project',
+			'post_status' => [ 'publish', 'draft', 'pending', 'private' ],
+			'posts_per_page' => 100,
+			'orderby' => 'title',
+			'order' => 'ASC',
+		];
+		if ( class_exists( '\\Marison\\Core\\Multilingual\\Polylang' ) && \Marison\Core\Multilingual\Polylang::available() ) {
+			$args['lang'] = \Marison\Core\Multilingual\Polylang::default_language();
+		}
+		$projects = get_posts( $args );
+		foreach ( $projects as $project ) {
+			printf( '<label style="display:block;margin:4px 0;"><input type="checkbox" name="marison_article_projects[]" value="%d" %s /> %s</label>', (int) $project->ID, checked( in_array( $project->ID, $selected, true ), true, false ), esc_html( $project->post_title ) );
+		}
+		if ( ! $projects ) {
+			echo '<p class="description">Belum ada Project yang dapat dipilih.</p>';
+		}
+	}
+
 	public static function render_location_metabox( \WP_Post $post ): void {
 		if ( 'marison_project' !== $post->post_type ) {
 			wp_terms_checklist( $post->ID, [ 'taxonomy' => 'marison_location', 'checked_ontop' => false ] );
@@ -210,7 +234,7 @@ final class MetaBoxes {
 	}
 
 	public static function save( int $post_id, \WP_Post $post, bool $update = false ): void {
-		if ( ! in_array( $post->post_type, [ 'marison_project', 'marison_house_type', 'marison_branch' ], true ) ) {
+		if ( ! in_array( $post->post_type, [ 'marison_project', 'marison_house_type', 'marison_branch', 'post' ], true ) ) {
 			return;
 		}
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE || wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
@@ -228,6 +252,9 @@ final class MetaBoxes {
 					break;
 				case 'marison_branch':
 					self::save_branch( $post_id );
+					break;
+				case 'post':
+					self::save_article_projects( $post_id );
 					break;
 			}
 		}
@@ -308,6 +335,16 @@ final class MetaBoxes {
 	private static function save_branch( int $post_id ): void {
 		self::save_text( $post_id, Meta::BRANCH_WHATSAPP, 'marison_branch_whatsapp', false, [ Validation::class, 'sanitize_contact_number' ] );
 		self::save_text( $post_id, Meta::BRANCH_TELEPHONE, 'marison_branch_telephone', false, [ Validation::class, 'sanitize_contact_number' ] );
+	}
+
+	private static function save_article_projects( int $post_id ): void {
+		$projects = isset( $_POST['marison_article_projects'] ) ? wp_unslash( $_POST['marison_article_projects'] ) : [];
+		$projects = Validation::sanitize_article_project_ids( $projects );
+		if ( $projects ) {
+			update_post_meta( $post_id, Meta::ARTICLE_PROJECTS, $projects );
+		} else {
+			delete_post_meta( $post_id, Meta::ARTICLE_PROJECTS );
+		}
 	}
 
 	private static function save_text( int $post_id, string $meta_key, string $input_name, bool $textarea, ?callable $sanitizer = null ): void {

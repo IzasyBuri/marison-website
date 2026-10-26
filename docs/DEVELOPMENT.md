@@ -237,6 +237,50 @@ It does not include frontend Unit presentation, public Unit routes, CSV import/e
 siteplan data, pricing, KPR, Career, multilingual integration, frontend forms,
 production connections, or deployment.
 
+## Project Detail v1 phase
+
+The public Project Detail is the native `marison_project` single template at
+`/perumahan/[project]/`. The controlled `single-marison_project.html` template owns
+the Header → Project Detail block → Footer structure; `marison-core` owns the focused
+`ProjectDetail` read model and all canonical business lookups. No Project archive,
+House Type URL, or Unit URL is created.
+
+The read model resolves a translated Project presentation from the canonical
+Indonesian Project ID. Status, location, House Type ownership, Unit inventory,
+availability source, Branch contact, KPR state, and Article relationships always use
+canonical/shared data. English title and editorial content use the linked translation;
+missing House Type or Article translations fall back to the canonical presentation and
+are labelled honestly. Polylang can be inactive without disabling Indonesian Project
+Detail rendering.
+
+Project Detail availability has exactly one public source:
+
+| Mode | Public contract |
+|---|---|
+| `units` | Derived `available`, `booked`, and `sold` totals plus public Unit identifier/status rows; no internal row IDs or private data |
+| `manual` | Configured aggregate counts only, labelled as a manual summary requiring Branch confirmation; no Unit rows |
+| incomplete/unavailable | Honest notice; no fabricated zeroes or competing source |
+
+Units-mode rows use a fixed server-side page size of **12** through the validated
+`unit_page` query parameter. There is no public page-size control, infinite scroll, SPA,
+or global Unit route. Unit/House Type relationships are checked against the canonical
+Project before a House Type label is shown.
+
+Project contact is read only through `ContactResolver`: Primary Branch WhatsApp,
+Primary Branch telephone, configured corporate fallback, then unavailable. Hero,
+Availability, mobile sticky action, and final Contact section reuse the same resolver
+result; WhatsApp links do not create Leads. A compact mobile action appears only after
+the Hero and hides at the final Contact section. The final Contact section remains in
+normal flow when no contact is available.
+
+Articles can be related to zero, one, or many canonical Projects through the controlled
+`_marison_article_projects` metadata field and the Project editor's Project Terkait
+box. Related Articles remain at their normal Article URLs and are omitted when no
+canonical relationship exists. KPR is an educational entry to the localized `/kpr/`
+destination; the Project page does not calculate installments. Location uses the
+existing City/Regency, Province, and address data. Interactive map providers are
+deferred because none is approved.
+
 ## Lead and contact foundation phase
 
 The approved Lead/contact foundation adds a private prefixed Lead table, restricted

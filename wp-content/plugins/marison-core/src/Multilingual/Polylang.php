@@ -44,9 +44,11 @@ final class Polylang {
 		if ( $from_type !== $to_type ) { return $metas; }
 		$shared = [];
 		if ( 'marison_project' === $from_type ) {
-			$shared = [ Meta::PROJECT_STATUS, Meta::PROJECT_PRIMARY_BRANCH, Meta::PROJECT_MARKETING, Meta::PROJECT_PROGRESS, Meta::PROJECT_PROGRESS_DESCRIPTION, Meta::PROJECT_AVAILABILITY_MODE, Meta::PROJECT_MANUAL_AVAILABLE, Meta::PROJECT_MANUAL_BOOKED, Meta::PROJECT_MANUAL_SOLD, Meta::PROJECT_ADDRESS ];
+			$shared = [ Meta::PROJECT_STATUS, Meta::PROJECT_PRIMARY_BRANCH, Meta::PROJECT_MARKETING, Meta::PROJECT_PROGRESS, Meta::PROJECT_AVAILABILITY_MODE, Meta::PROJECT_MANUAL_AVAILABLE, Meta::PROJECT_MANUAL_BOOKED, Meta::PROJECT_MANUAL_SOLD, Meta::PROJECT_ADDRESS ];
 		} elseif ( 'marison_house_type' === $from_type ) {
 			$shared = [ Meta::HOUSE_TYPE_PROJECT, Meta::HOUSE_TYPE_BUILDING_AREA, Meta::HOUSE_TYPE_LAND_AREA, Meta::HOUSE_TYPE_BEDROOMS, Meta::HOUSE_TYPE_BATHROOMS, Meta::HOUSE_TYPE_FLOORS, '_thumbnail_id' ];
+		} elseif ( 'post' === $from_type ) {
+			$shared = [ Meta::ARTICLE_PROJECTS ];
 		}
 		return array_values( array_unique( array_merge( $metas, $shared ) ) );
 	}
