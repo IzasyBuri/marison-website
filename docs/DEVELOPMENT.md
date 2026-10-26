@@ -410,6 +410,41 @@ users/roles, media, scripts, logs, caches, and screenshots afterward. Database
 content, Polylang relationships, Page assignments, and permalinks are local
 environment state; Git synchronizes source and documentation only.
 
+## About / Tentang Kami v1 phase
+
+About is a normal editable WordPress Page at `/tentang-kami/`; it is not an About
+CPT, company-profile table, history store, values taxonomy, team directory, or
+settings screen. Provision the Indonesian Page with the slug `tentang-kami`, use
+the structural `page-tentang-kami.html` template, and insert the controlled
+**Marison About Content** pattern. After insertion, the blocks are ordinary Page
+content and editors may replace the headings, copy, approach cards, buttons, and
+any optional WordPress-managed images without changing code.
+
+Create and link the English Page independently through Polylang. The English Page
+may use its own editorial copy and its actual configured slug; do not assume a
+paid translated base slug or hard-code `/en/about-us/`. Existing Header/Footer
+navigation and the About/Housing calls to action use the current-language
+navigation resolver. If the English translation is missing, retain the existing
+Polylang missing-translation behavior rather than redirecting to English Home.
+
+The seed copy is intentionally conservative. It may describe Marison Group as a
+housing developer operating in Java, Indonesia, but it must not add unapproved
+dates, counts, staff, customers, awards, certifications, partnerships, financial
+metrics, milestones, or internal Branch information. About v1 has no dynamic
+business-data block and no new `marison-core` changes. The Housing CTA points to
+the current-language `/perumahan/` Page; Contact and Branch presentation remain
+outside this phase.
+
+For local validation, temporary Indonesian and linked English Pages may be
+created, then must be deleted along with temporary media, scripts, screenshots,
+logs, caches, and browser artifacts. Save **Settings → Permalinks** after Page
+provisioning or slug changes. Database content, Page assignments, Polylang
+relationships, and translated editorial copy are local environment state; Git
+synchronizes only the template, pattern, theme styles, homepage seed CTA, and
+this workflow. After cleanup, `/tentang-kami/` may correctly return 404 until a
+real Page is provisioned. Polylang should be reactivated after inactive-mode
+checks.
+
 ## Lead and contact foundation phase
 
 The approved Lead/contact foundation adds a private prefixed Lead table, restricted
