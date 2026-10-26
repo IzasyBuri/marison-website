@@ -34,6 +34,7 @@ add_action(
 		register_block_type( 'marison/homepage-articles', [ 'render_callback' => 'marison_render_homepage_articles' ] );
 		register_block_type( 'marison/housing-directory', [ 'render_callback' => 'marison_render_housing_directory' ] );
 		register_block_type( 'marison/project-detail', [ 'render_callback' => 'marison_render_project_detail' ] );
+		register_block_type( 'marison/kpr-status', [ 'render_callback' => 'marison_render_kpr_status' ] );
 		register_block_type( 'marison/navigation-link', [ 'render_callback' => 'marison_render_navigation_link', 'attributes' => [ 'label_key' => [ 'type' => 'string' ], 'path' => [ 'type' => 'string' ], 'variant' => [ 'type' => 'string' ] ] ] );
 	}
 );
@@ -242,4 +243,106 @@ function marison_render_navigation_link( array $attributes ): string {
 	$url = class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::localized_url( $path ) : home_url( $path );
 	$variant = 'button' === ( $attributes['variant'] ?? '' ) ? ' class="wp-block-button__link wp-element-button"' : '';
 	return '<a href="' . esc_url( $url ) . '"' . $variant . '>' . esc_html( $label ) . '</a>';
+}
+
+function marison_kpr_page_view(): array {
+	$class = '\\Marison\\Core\\Presentation\\KprPage';
+	return class_exists( $class ) ? $class::view() : [
+		'state'            => 'UNAVAILABLE',
+		'available'        => false,
+		'calculator_state' => 'UNAVAILABLE',
+		'scheme'           => null,
+		'editorial'        => [
+			'title'      => [ 'state' => 'NOT_CONFIGURED', 'text' => '', 'fallback' => false ],
+			'disclaimer' => [ 'state' => 'NOT_CONFIGURED', 'text' => '', 'fallback' => false ],
+		],
+	];
+}
+
+function marison_kpr_label( string $key ): string {
+	$english = class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) && 'en' === \Marison\Core\Multilingual\Resolver::current_language();
+	$labels  = [
+		'simulation_status'      => [ 'id' => 'Status simulasi', 'en' => 'Simulation status' ],
+		'unavailable'            => [ 'id' => 'Simulasi belum tersedia', 'en' => 'Simulation is not available yet' ],
+		'no_default'             => [ 'id' => 'Belum ada konfigurasi KPR publik yang dapat digunakan.', 'en' => 'No eligible public KPR configuration is available.' ],
+		'invalid_default'        => [ 'id' => 'Konfigurasi KPR publik belum lengkap atau tidak valid.', 'en' => 'The public KPR configuration is incomplete or invalid.' ],
+		'inactive_default'       => [ 'id' => 'Konfigurasi KPR publik sedang tidak aktif.', 'en' => 'The public KPR configuration is inactive.' ],
+		'not_implemented'        => [ 'id' => 'Konfigurasi tersedia, tetapi rumus simulasi belum diimplementasikan.', 'en' => 'Configuration is available, but the simulation formula is not implemented.' ],
+		'configuration'          => [ 'id' => 'Konfigurasi publik', 'en' => 'Public configuration' ],
+		'scheme_title'           => [ 'id' => 'Nama konfigurasi', 'en' => 'Configuration name' ],
+		'annual_rate'            => [ 'id' => 'Asumsi bunga tahunan terkonfigurasi', 'en' => 'Configured annual rate assumption' ],
+		'tenures'                => [ 'id' => 'Tenure tersedia', 'en' => 'Available tenure' ],
+		'default_dp'             => [ 'id' => 'Asumsi DP default', 'en' => 'Default DP assumption' ],
+		'effective_date'         => [ 'id' => 'Tanggal efektif', 'en' => 'Effective date' ],
+		'disclaimer'             => [ 'id' => 'Disclaimer konfigurasi', 'en' => 'Configured disclaimer' ],
+		'no_disclaimer'          => [ 'id' => 'Belum ada disclaimer konfigurasi yang tersedia.', 'en' => 'No configured scheme disclaimer is available.' ],
+		'missing_editorial'      => [ 'id' => 'Teks editorial Indonesia ditampilkan karena terjemahan bahasa Inggris belum dikonfigurasi.', 'en' => 'Indonesian editorial text is shown because an English translation is not configured.' ],
+		'years'                  => [ 'id' => '%d tahun', 'en' => '%d years' ],
+		'months'                => [ 'id' => '%d bulan', 'en' => '%d months' ],
+	];
+	$label = $labels[ $key ][ $english ? 'en' : 'id'] ?? '';
+	return translate( $label, 'marison' );
+}
+
+function marison_render_kpr_status(): string {
+	$view = marison_kpr_page_view();
+	$id   = 'marison-kpr-status-heading';
+	$out  = '<section class="marison-kpr-status marison-kpr-status--' . esc_attr( strtolower( sanitize_key( (string) $view['state'] ) ) ) . '" aria-labelledby="' . esc_attr( $id ) . '">';
+	$out .= '<p class="marison-kpr-status__eyebrow">KPR</p><h2 id="' . esc_attr( $id ) . '">' . esc_html( marison_kpr_label( 'simulation_status' ) ) . '</h2>';
+
+	if ( ! $view['available'] ) {
+		$state_key = sanitize_key( strtolower( (string) $view['state'] ) );
+		$reason    = marison_kpr_label( 'invalid_default' );
+		if ( 'no_default' === $state_key ) {
+			$reason = marison_kpr_label( 'no_default' );
+		} elseif ( 'inactive_default' === $state_key ) {
+			$reason = marison_kpr_label( 'inactive_default' );
+		}
+		$out .= '<p class="marison-kpr-status__state">' . esc_html( marison_kpr_label( 'unavailable' ) ) . '</p><p>' . esc_html( $reason ) . '</p></section>';
+		return $out;
+	}
+
+	$out .= '<p class="marison-kpr-status__state">' . esc_html( marison_kpr_label( 'unavailable' ) ) . '</p><p>' . esc_html( marison_kpr_label( 'not_implemented' ) ) . '</p>';
+	$out .= '<div class="marison-kpr-status__configuration"><h3>' . esc_html( marison_kpr_label( 'configuration' ) ) . '</h3>';
+	$editorial = $view['editorial'];
+	$title     = $editorial['title'];
+	if ( '' !== (string) $title['text'] ) {
+		$out .= '<dl><dt>' . esc_html( marison_kpr_label( 'scheme_title' ) ) . '</dt><dd>' . esc_html( $title['text'] ) . '</dd></dl>';
+		if ( ! empty( $title['fallback'] ) ) {
+			$out .= '<p class="marison-kpr-status__translation-note">' . esc_html( marison_kpr_label( 'missing_editorial' ) ) . '</p>';
+		}
+	}
+
+	$scheme = $view['scheme'];
+	$out   .= '<dl class="marison-kpr-status__facts">';
+	if ( '' !== (string) $scheme['annual_rate_percent_points'] ) {
+		$out .= '<div><dt>' . esc_html( marison_kpr_label( 'annual_rate' ) ) . '</dt><dd>' . esc_html( $scheme['annual_rate_percent_points'] . '%' ) . '</dd></div>';
+	}
+	if ( $scheme['tenure_options'] ) {
+		$out .= '<div><dt>' . esc_html( marison_kpr_label( 'tenures' ) ) . '</dt><dd><ul>';
+		foreach ( $scheme['tenure_options'] as $tenure ) {
+			$label = null !== $tenure['years'] ? sprintf( marison_kpr_label( 'years' ), (int) $tenure['years'] ) : sprintf( marison_kpr_label( 'months' ), (int) $tenure['months'] );
+			$out  .= '<li>' . esc_html( $label ) . '</li>';
+		}
+		$out .= '</ul></dd></div>';
+	}
+	if ( '' !== (string) $scheme['default_dp_percent'] ) {
+		$out .= '<div><dt>' . esc_html( marison_kpr_label( 'default_dp' ) ) . '</dt><dd>' . esc_html( $scheme['default_dp_percent'] . '%' ) . '</dd></div>';
+	}
+	if ( '' !== (string) $scheme['effective_date'] ) {
+		$out .= '<div><dt>' . esc_html( marison_kpr_label( 'effective_date' ) ) . '</dt><dd>' . esc_html( $scheme['effective_date'] ) . '</dd></div>';
+	}
+	$out .= '</dl></div>';
+
+	$disclaimer = $editorial['disclaimer'];
+	$out        .= '<aside class="marison-kpr-status__disclaimer"><h3>' . esc_html( marison_kpr_label( 'disclaimer' ) ) . '</h3>';
+	if ( '' !== (string) $disclaimer['text'] ) {
+		$out .= '<p>' . nl2br( esc_html( $disclaimer['text'] ) ) . '</p>';
+		if ( ! empty( $disclaimer['fallback'] ) ) {
+			$out .= '<p class="marison-kpr-status__translation-note">' . esc_html( marison_kpr_label( 'missing_editorial' ) ) . '</p>';
+		}
+	} else {
+		$out .= '<p>' . esc_html( marison_kpr_label( 'no_disclaimer' ) ) . '</p>';
+	}
+	return $out . '</aside></section>';
 }

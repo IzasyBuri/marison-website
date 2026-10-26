@@ -31,6 +31,7 @@ final class PublicDefault {
 	public static function eligible( int $scheme_id ) {
 		$scheme = get_post( $scheme_id );
 		if ( ! $scheme || 'marison_kpr_scheme' !== $scheme->post_type || 'trash' === $scheme->post_status ) { return new \WP_Error( 'marison_kpr_scheme_invalid', 'KPR Scheme tidak valid.' ); }
+		if ( 'publish' !== $scheme->post_status ) { return new \WP_Error( 'marison_kpr_scheme_unpublished', 'KPR Scheme harus berstatus Published.' ); }
 		if ( 'active' !== get_post_meta( $scheme_id, '_marison_kpr_state', true ) ) { return new \WP_Error( 'marison_kpr_scheme_inactive', 'KPR Scheme harus Aktif.' ); }
 		return SchemeRules::validate_scheme( $scheme_id );
 	}
