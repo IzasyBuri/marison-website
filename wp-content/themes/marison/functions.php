@@ -28,6 +28,32 @@ add_action(
 
 add_action(
 	'init',
+	'marison_register_article_pattern',
+	9
+);
+
+function marison_register_article_pattern(): void {
+	if ( ! function_exists( 'register_block_pattern' ) || WP_Block_Patterns_Registry::get_instance()->is_registered( 'marison/article-archive-content' ) ) {
+		return;
+	}
+
+	ob_start();
+	include __DIR__ . '/patterns/article-archive-content.php';
+	$content = ob_get_clean();
+	register_block_pattern(
+		'marison/article-archive-content',
+		[
+			'title' => 'Marison Article Archive Content',
+			'description' => 'Native Article archive structure with localized introduction, Query Loop, pagination, and housing discovery CTA.',
+			'categories' => [ 'marison-articles' ],
+			'inserter' => false,
+			'content' => $content,
+		]
+	);
+}
+
+add_action(
+	'init',
 	static function (): void {
 		register_block_type( 'marison/homepage-featured-projects', [ 'render_callback' => 'marison_render_homepage_featured_projects' ] );
 		register_block_type( 'marison/homepage-locations', [ 'render_callback' => 'marison_render_homepage_locations' ] );
@@ -35,9 +61,31 @@ add_action(
 		register_block_type( 'marison/housing-directory', [ 'render_callback' => 'marison_render_housing_directory' ] );
 		register_block_type( 'marison/project-detail', [ 'render_callback' => 'marison_render_project_detail' ] );
 		register_block_type( 'marison/kpr-status', [ 'render_callback' => 'marison_render_kpr_status' ] );
+		register_block_type( 'marison/article-archive-copy', [ 'render_callback' => 'marison_render_article_archive_copy', 'attributes' => [ 'variant' => [ 'type' => 'string', 'default' => 'intro' ] ] ] );
+		register_block_type( 'marison/article-card', [ 'render_callback' => 'marison_render_article_card' ] );
+		register_block_type( 'marison/article-meta', [ 'render_callback' => 'marison_render_article_meta' ] );
+		register_block_type( 'marison/article-featured-image', [ 'render_callback' => 'marison_render_article_featured_image' ] );
+		register_block_type( 'marison/article-related-projects', [ 'render_callback' => 'marison_render_article_related_projects' ] );
 		register_block_type( 'marison/navigation-link', [ 'render_callback' => 'marison_render_navigation_link', 'attributes' => [ 'label_key' => [ 'type' => 'string' ], 'path' => [ 'type' => 'string' ], 'variant' => [ 'type' => 'string' ] ] ] );
 	}
 );
+
+add_action(
+	'pre_get_posts',
+	'marison_configure_article_archive_query'
+);
+
+function marison_configure_article_archive_query( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() || ! $query->is_home() ) {
+		return;
+	}
+
+	$query->set( 'post_type', 'post' );
+	$query->set( 'post_status', 'publish' );
+	$query->set( 'posts_per_page', 9 );
+	$query->set( 'orderby', [ 'date' => 'DESC', 'ID' => 'DESC' ] );
+	$query->set( 'ignore_sticky_posts', true );
+}
 
 function marison_homepage_read_model(): ?string {
 	$class = '\\Marison\\Core\\Presentation\\Homepage';
@@ -224,6 +272,104 @@ function marison_render_homepage_articles(): string {
 		$output .= '<article class="marison-card marison-article-card">' . $image . '<div class="marison-card__content"><h3>' . esc_html( $article['title'] ) . '</h3><p>' . esc_html( $article['excerpt'] ) . '</p><p><a href="' . esc_url( $article['url'] ) . '">' . esc_html__( 'Baca artikel', 'marison' ) . '</a></p></div></article>';
 	}
 	return $output . '</div></div></section>';
+}
+
+function marison_article_language(): string {
+	return class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::current_language() : 'id';
+}
+
+function marison_article_label( string $key ): string {
+	$english = 'en' === marison_article_language();
+	$labels = [
+		'archive_title' => [ 'id' => 'Artikel Marison', 'en' => 'Marison Articles' ],
+		'archive_intro' => [ 'id' => 'Baca wawasan tentang hunian, lingkungan, dan perjalanan memilih rumah bersama Marison.', 'en' => 'Read practical perspectives on homes, neighborhoods, and the journey of choosing a place to live with Marison.' ],
+		'empty_title' => [ 'id' => 'Belum ada artikel yang tersedia.', 'en' => 'No articles are available yet.' ],
+		'empty_text' => [ 'id' => 'Kami sedang menyiapkan tulisan editorial untuk membantu Anda memahami pilihan hunian.', 'en' => 'We are preparing editorial stories to help you understand your housing options.' ],
+		'published' => [ 'id' => 'Diterbitkan', 'en' => 'Published' ],
+		'category' => [ 'id' => 'Kategori', 'en' => 'Category' ],
+		'related_projects' => [ 'id' => 'Project terkait', 'en' => 'Related Projects' ],
+		'article_cta_title' => [ 'id' => 'Lanjutkan mencari hunian', 'en' => 'Continue exploring homes' ],
+		'article_cta_text' => [ 'id' => 'Jelajahi Project Marison untuk menemukan pilihan hunian yang sesuai dengan kebutuhan Anda.', 'en' => 'Explore Marison Projects to find housing options that fit your needs.' ],
+		'view_housing' => [ 'id' => 'Lihat semua perumahan', 'en' => 'Explore all housing' ],
+	];
+	return translate( $labels[ $key ][ $english ? 'en' : 'id' ] ?? '', 'marison' );
+}
+
+function marison_render_article_archive_copy( array $attributes ): string {
+	$variant = sanitize_key( $attributes['variant'] ?? 'intro' );
+	if ( ! in_array( $variant, [ 'intro', 'empty', 'cta' ], true ) ) {
+		$variant = 'intro';
+	}
+	if ( 'empty' === $variant ) {
+		return '<div class="marison-article-empty" role="status"><h2>' . esc_html( marison_article_label( 'empty_title' ) ) . '</h2><p>' . esc_html( marison_article_label( 'empty_text' ) ) . '</p></div>';
+	}
+	if ( 'cta' === ( $attributes['variant'] ?? '' ) ) {
+		return '<section class="marison-article-cta marison-surface--dark"><h2>' . esc_html( marison_article_label( 'article_cta_title' ) ) . '</h2><p>' . esc_html( marison_article_label( 'article_cta_text' ) ) . '</p><p>' . marison_render_navigation_link( [ 'label_key' => 'search', 'path' => '/perumahan/', 'variant' => 'button' ] ) . '</p></section>';
+	}
+
+	return '<section class="marison-article-archive-intro"><p class="marison-article-eyebrow">' . esc_html( marison_article_label( 'archive_title' ) ) . '</p><h1>' . esc_html( marison_article_label( 'archive_title' ) ) . '</h1><p class="marison-article-archive-intro__lead">' . esc_html( marison_article_label( 'archive_intro' ) ) . '</p></section>';
+}
+
+function marison_render_article_card(): string {
+	$post = get_post();
+	if ( ! $post || 'post' !== $post->post_type ) {
+		return '';
+	}
+
+	$title = get_the_title( $post );
+	$url = get_permalink( $post );
+	$image_id = get_post_thumbnail_id( $post );
+	if ( $image_id ) {
+		$image = wp_get_attachment_image( $image_id, 'medium_large', false, [ 'class' => 'marison-image--editorial', 'loading' => 'lazy' ] );
+	} else {
+		$image = '<div class="marison-image--editorial marison-image--fallback" role="img" aria-label="' . esc_attr( $title ) . '"><span aria-hidden="true">Marison</span></div>';
+	}
+
+	return '<article class="marison-card marison-article-card">' . $image . '<div class="marison-card__content"><p class="marison-article-card__date"><time datetime="' . esc_attr( get_the_date( DATE_W3C, $post ) ) . '">' . esc_html( get_the_date( '', $post ) ) . '</time></p><h2>' . esc_html( $title ) . '</h2><p>' . esc_html( wp_trim_words( wp_strip_all_tags( get_the_excerpt( $post ) ), 26 ) ) . '</p><p><a href="' . esc_url( $url ) . '">' . esc_html( 'en' === marison_article_language() ? 'Read article' : 'Baca artikel' ) . '</a></p></div></article>';
+}
+
+function marison_render_article_meta(): string {
+	$post = get_post();
+	if ( ! $post || 'post' !== $post->post_type ) {
+		return '';
+	}
+
+	$parts = [ '<span><span class="screen-reader-text">' . esc_html( marison_article_label( 'published' ) ) . ': </span><time datetime="' . esc_attr( get_the_date( DATE_W3C, $post ) ) . '">' . esc_html( get_the_date( '', $post ) ) . '</time></span>' ];
+	$categories = get_the_category( $post->ID );
+	if ( $categories && ! is_wp_error( $categories ) ) {
+		$parts[] = '<span><span class="screen-reader-text">' . esc_html( marison_article_label( 'category' ) ) . ': </span>' . esc_html( $categories[0]->name ) . '</span>';
+	}
+
+	return '<div class="marison-article-meta">' . implode( '<span aria-hidden="true">·</span>', $parts ) . '</div>';
+}
+
+function marison_render_article_featured_image(): string {
+	$post = get_post();
+	if ( ! $post || 'post' !== $post->post_type ) {
+		return '';
+	}
+
+	$image_id = get_post_thumbnail_id( $post );
+	if ( $image_id ) {
+		return '<figure class="marison-article-featured-image">' . wp_get_attachment_image( $image_id, 'large', false, [ 'loading' => 'eager' ] ) . '</figure>';
+	}
+
+	return '<div class="marison-article-featured-image marison-image--fallback" role="img" aria-label="' . esc_attr( get_the_title( $post ) ) . '"><span aria-hidden="true">Marison</span></div>';
+}
+
+function marison_render_article_related_projects(): string {
+	$post = get_post();
+	$read_model = '\\Marison\\Core\\Presentation\\Article';
+	$projects = $post && class_exists( $read_model ) ? $read_model::related_projects( $post->ID, marison_article_language() ) : [];
+	if ( ! $projects ) {
+		return '';
+	}
+
+	$output = '<section class="marison-article-related-projects" aria-labelledby="marison-article-related-projects-heading"><h2 id="marison-article-related-projects-heading">' . esc_html( marison_article_label( 'related_projects' ) ) . '</h2><div class="marison-foundation-grid">';
+	foreach ( $projects as $project ) {
+		$output .= marison_render_project_card( $project );
+	}
+	return $output . '</div></section>';
 }
 
 function marison_render_navigation_link( array $attributes ): string {

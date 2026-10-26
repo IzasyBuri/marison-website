@@ -88,6 +88,81 @@ manually or add a custom `/en/` redirect. If a local runtime ever returns an
 Apache 404 for a known pretty URL, repeat this WordPress admin save operation
 before investigating application code.
 
+### Articles Archive and native Post URLs
+
+Articles use native WordPress Posts. Each environment must provision one normal
+WordPress Page titled **Artikel** with the slug `artikel`, then assign that Page as
+the site's Posts Page under **Settings → Reading**. Keep **Your homepage displays**
+set to **A static page** with the existing Homepage Page selected as the front
+page; WordPress only activates the Posts Page boundary in this normal static-page
+configuration. This is one WordPress
+`page_for_posts` configuration boundary; do not create or assume a second
+language-specific WordPress option.
+
+When Polylang Free is active, create and link the English translation of the
+Artikel Page through the normal Polylang Page language controls, then verify the
+actual translated Posts Page URL produced by that runtime. Polylang's current
+behavior, not a hard-coded `/articles/` convention, is the source of truth for the
+English archive navigation and URL. The Artikel Page's `post_content` is not the
+archive introduction owner: `templates/home.html` and the controlled theme
+presentation provide the archive structure and localized introduction/empty state.
+
+In the local Polylang Free verification, an English Page slug of
+`articles-fixture` produced the translated archive at `/en/articles-fixture/`,
+while the configured native Post base produced translated Article details at
+`/en/artikel/[post-slug]/`. This is evidence of the runtime behavior, not a
+hard-coded production slug requirement; verify the actual translated Page slug
+and links after each environment is provisioned.
+
+Set the native Post permalink structure explicitly in **Settings → Permalinks**:
+
+```text
+/artikel/%postname%/
+```
+
+Click **Save Changes** after changing this structure and after provisioning the
+Artikel Page on each local/staging database. This is an explicit runtime database
+configuration change; Marison source does not silently mutate
+`permalink_structure`, flush rules on every request, add redirects, or edit
+`.htaccess`. The expected native routes are `/artikel/` and
+`/artikel/[post-slug]/`, with the English routes determined by the active
+Polylang/WordPress configuration.
+
+The public Article archive is the native Posts Page main query. The theme narrows
+only that frontend main query to nine published native Posts, newest published
+date first with Post ID descending as the deterministic tie-breaker, and leaves
+Polylang's language filter intact. Search, admin, REST, Pages, Projects, KPR, and
+Homepage secondary queries are not changed. Native WordPress pagination semantics
+remain authoritative: valid pages paginate server-side, while a nonexistent page
+such as `/artikel/page/999/` may return the normal WordPress 404 without clamping
+or redirecting it.
+
+Article editors continue to use the normal Post editor for title, date, featured
+image, category, and body content. Category labels are display-only in V1 and do
+not link to a category archive. Comments and public author archive links are not
+rendered.
+
+The Article → Project selector stores an ordered array in
+`_marison_article_projects`. Values are canonical Indonesian Project IDs. For an
+English Article, presentation starts from the current-language translated Post,
+but `marison-core` resolves the canonical Indonesian Article first and reads the
+relationship from that canonical source. Existing Polylang shared-meta
+synchronization remains unchanged; no translated Project IDs or competing English
+relationship array is created. Each stored Project is then presented in English
+when its translation exists, otherwise the canonical Indonesian Project is shown
+with an honest missing-translation note. Invalid/trashed/unpublished Projects are
+omitted while the relative order of remaining valid Projects is preserved.
+
+For local validation, create clearly synthetic Indonesian/English Article Posts,
+an Indonesian-only Post, categories, media, and related Projects. Verify the
+Indonesian archive/detail, the actual English Polylang archive/detail URL, valid
+and nonexistent pagination, Homepage Article links, Project Detail related
+Article links, and route coexistence with `/`, `/en/`, `/perumahan/`,
+`/perumahan/[project]/`, and `/kpr/`. Remove all synthetic content and scripts
+after validation. Database content, Page assignments, Polylang relationships,
+permalinks, and uploads remain computer-specific state; Git synchronizes only the
+templates, theme/plugin source, and this documentation.
+
 Useful lifecycle commands:
 
 ```powershell
