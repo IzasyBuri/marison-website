@@ -22,6 +22,7 @@ require_once __DIR__ . '/KPR/PublicDefault.php';
 require_once __DIR__ . '/KPR/Calculator.php';
 require_once __DIR__ . '/Multilingual/Polylang.php';
 require_once __DIR__ . '/Multilingual/Resolver.php';
+require_once __DIR__ . '/Presentation/Homepage.php';
 require_once __DIR__ . '/Admin/KPRSchemes.php';
 require_once __DIR__ . '/Leads/LeadRules.php';
 require_once __DIR__ . '/Leads/LeadRepository.php';

@@ -28,6 +28,24 @@ final class Resolver {
 		return absint( pll_get_term( absint( $term_id ), sanitize_key( $language ) ) );
 	}
 
+	public static function localized_url( string $path ): string {
+		$path = trim( $path, '/' );
+		$canonical_url = $path ? home_url( '/' . $path . '/' ) : home_url( '/' );
+		if ( ! Polylang::available() || Polylang::current_language() === Polylang::default_language() ) {
+			return $canonical_url;
+		}
+
+		$page = $path ? get_page_by_path( $path, OBJECT, 'page' ) : null;
+		if ( $page ) {
+			$translated_id = self::translated_post_id( $page->ID, Polylang::current_language() );
+			if ( $translated_id ) {
+				return (string) get_permalink( $translated_id );
+			}
+		}
+
+		return $canonical_url;
+	}
+
 	public static function translation_state( int $post_id, string $language ): array {
 		$canonical = self::canonical_post_id( $post_id );
 		if ( ! Polylang::available() ) { return [ 'state' => 'UNAVAILABLE', 'canonical_id' => $canonical, 'post_id' => $post_id, 'language' => $language ]; }
