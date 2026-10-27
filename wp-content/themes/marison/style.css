@@ -139,6 +139,44 @@ body:has(.marison-career-template) .marison-site-footer a { color: var(--wp--pre
 .marison-about-cta .wp-block-buttons { margin-bottom: 0; }
 .marison-about-cta .wp-block-button__link { display: inline-flex; width: auto; min-height: 2.75rem; background: var(--wp--preset--color--white); color: var(--wp--preset--color--deep-green); }
 
+.marison-contact-page { overflow: hidden; }
+.marison-contact-page > :where(.marison-contact-hero, .marison-contact-section) { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
+.marison-contact-hero { padding-block: var(--wp--preset--spacing--xx-large) var(--wp--preset--spacing--x-large); }
+.marison-contact-hero h1 { max-width: 16ch; margin-block: 0 var(--wp--preset--spacing--small); line-height: 1.08; }
+.marison-contact-hero p { max-width: 60ch !important; margin-bottom: 0; }
+.marison-contact-section { padding-block: var(--wp--preset--spacing--large); }
+.marison-contact-section > :first-child { margin-top: 0; }
+.marison-contact-section > :last-child { margin-bottom: 0; }
+.marison-contact-channels,
+.marison-contact-form { display: grid; gap: var(--wp--preset--spacing--medium); }
+.marison-contact-channels h2,
+.marison-contact-form h2 { margin: 0; }
+.marison-contact-channels__list { display: grid; gap: var(--wp--preset--spacing--medium); grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+.marison-contact-channel { min-width: 0; padding: var(--wp--preset--spacing--medium); border: 1px solid color-mix(in srgb, var(--wp--preset--color--muted-gray) 25%, transparent); border-radius: var(--wp--preset--spacing--small); background: var(--wp--preset--color--white); }
+.marison-contact-channel__label { margin: 0 0 var(--wp--preset--spacing--x-small); color: #4e554f; font-size: var(--wp--preset--font-size--small); font-weight: 700; }
+.marison-contact-channel a { display: inline-block; max-width: 100%; overflow-wrap: anywhere; font-weight: 700; }
+.marison-contact-channels__unavailable { padding: var(--wp--preset--spacing--medium); border-left: .3rem solid var(--wp--preset--color--muted-gray); background: var(--wp--preset--color--white); }
+.marison-contact-channels__unavailable > :where(p) { margin-block: 0 var(--wp--preset--spacing--x-small); }
+.marison-contact-channels__unavailable > :last-child { margin-bottom: 0; }
+.marison-contact-channels__state { font-weight: 700; }
+.marison-contact-form { max-width: 48rem; }
+.marison-contact-form > p { margin: 0; }
+.marison-contact-form form { display: grid; gap: var(--wp--preset--spacing--small); }
+.marison-contact-form .marison-form-control { display: grid; gap: var(--wp--preset--spacing--x-small); }
+.marison-contact-form label { font-weight: 600; }
+.marison-contact-form :where(input:not([type="checkbox"]), textarea) { box-sizing: border-box; width: 100%; min-height: 2.75rem; border: 1px solid #59615b; border-radius: var(--wp--preset--spacing--x-small); padding: .625rem .75rem; background: var(--wp--preset--color--white); color: var(--wp--preset--color--charcoal); }
+.marison-contact-form textarea { min-height: 8rem; resize: vertical; }
+.marison-contact-form__consent label { display: flex; gap: var(--wp--preset--spacing--x-small); align-items: flex-start; }
+.marison-contact-form__consent input { flex: 0 0 auto; min-width: 1.25rem; min-height: 1.25rem; margin-top: .2rem; }
+.marison-contact-form button { width: fit-content; min-height: 2.75rem; border: 0; border-radius: var(--wp--preset--spacing--x-small); padding: .625rem 1rem; background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); cursor: pointer; font: inherit; font-weight: 700; }
+.marison-contact-form__notice { padding: var(--wp--preset--spacing--small) var(--wp--preset--spacing--medium); border-left: .3rem solid var(--wp--preset--color--deep-green); background: var(--wp--preset--color--white); }
+.marison-contact-form__notice--error { border-left-color: #a61b1b; }
+.marison-contact-form__honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.marison-contact-guidance { padding-block: var(--wp--preset--spacing--x-large); }
+.marison-contact-guidance > .wp-block-group { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); max-width: 1200px !important; margin-inline: auto; }
+.marison-contact-guidance :where(h2, p) { max-width: 60ch; }
+.marison-contact-guidance .wp-block-button__link { min-height: 2.75rem; background: var(--wp--preset--color--deep-green); color: var(--wp--preset--color--white); }
+
 .marison-article-archive { overflow: hidden; }
 .marison-article-archive__intro-wrap,
 .marison-article-archive > .wp-block-query { box-sizing: border-box; width: min(1200px, calc(100% - 2rem)); margin-inline: auto; }
@@ -376,6 +414,10 @@ body:has(.marison-career-template) .marison-site-footer a { color: var(--wp--pre
 	.marison-directory__filter-actions > * { width: 100%; }
 	.marison-career-list__grid { grid-template-columns: 1fr; }
 	.marison-about-approach-grid { grid-template-columns: 1fr; }
+	.marison-contact-channels__list { grid-template-columns: 1fr; }
+	.marison-contact-hero { padding-block: var(--wp--preset--spacing--x-large) var(--wp--preset--spacing--medium); }
+	.marison-contact-hero h1 { font-size: clamp(2rem, 10vw, 3rem); }
+	.marison-contact-section { padding-block: var(--wp--preset--spacing--medium); }
 	.marison-career-page > .wp-block-post-title,
 	.marison-career-template > .wp-block-post-title { padding-block: var(--wp--preset--spacing--x-large) var(--wp--preset--spacing--medium); font-size: clamp(2rem, 10vw, 3rem); }
 	.marison-image--hero { border-radius: var(--wp--preset--spacing--small); }

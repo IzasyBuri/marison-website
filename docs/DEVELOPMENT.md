@@ -465,6 +465,75 @@ to a depth-three City / Regency term. It does not store a separate semantic leve
 field or verify that a term name is actually a Country, Province, City, or Regency;
 staff should follow the displayed Country → Province → City / Regency guidance.
 
+## Contact Page v1
+
+Contact v1 is a normal corporate WordPress Page provisioned at `/kontak/` in
+Indonesian. Use `page-kontak.html` only for Header → Page content → Footer
+structure, then insert `marison/contact-content.php` as a seed and edit the
+resulting blocks as ordinary Page content. Provision and translate the linked
+English Page independently through Polylang; do not create a router or commit
+synthetic Page/database state. The Footer's existing Contact navigation link
+continues to use the current-language URL resolver.
+
+The corporate source of truth is restricted to the existing options
+`marison_corporate_telephone` and `marison_corporate_email`. The
+`Marison\\Core\\Contact\\CorporateContact::read()` boundary validates the
+telephone with the existing contact-number semantics and validates email with
+`sanitize_email()`/`is_email()`. It returns only public channel kind, display
+value, and safe `tel:`/`mailto:` URL fields. Invalid values are omitted; one
+valid channel is shown by itself; when both are absent the Page shows an honest
+unavailable state. No corporate WhatsApp, address, map, Careers email, site
+admin email, Branch data, or Marketing data is used.
+
+The two dynamic theme blocks remain narrow: `marison/corporate-contact` owns
+only the configured public channels, while `marison/general-contact-form` owns
+only the form and public success/error notice. Hero, explanatory copy, Project
+guidance, and the localized `/perumahan/` CTA remain normal editable Page
+content in the seed pattern. Generic Contact never calls the Project
+`ContactResolver`; Project contact remains Project → Primary Branch → public
+contact through the Project Detail flow.
+
+The general form accepts only public `name`, `contact`, optional `message`,
+required `consent`, and the existing `website` abuse-protection field. The
+controller allowlists those fields and ignores every other POST value. It uses
+the existing nonce field `marison_lead_nonce` with nonce action
+`marison_submit_lead`, then `LeadSubmission::submit_general()` sets the
+server-owned `inquiry_type = general` and `project_id = null` before delegating
+to the existing `LeadSubmission::submit()` pipeline. That shared pipeline
+continues to own validation, consent/version, abuse protection, repository
+storage, and rate recording. The authenticated and unauthenticated hooks are
+`admin_post_marison_submit_general_lead` and
+`admin_post_nopriv_marison_submit_general_lead`. The persisted contract must be
+verified with SQL: `inquiry_type = 'general'` and `project_id IS NULL`.
+
+Submission uses POST → redirect → GET. General submissions redirect only to a
+known canonical or Polylang-linked Contact Page URL through `wp_safe_redirect()`
+and fall back to `/kontak/`; the public query state is only `success` or
+generic `error`. Lead IDs, validation internals, storage errors, nonce details,
+and abuse/rate-limit details are not exposed. Refreshing the result Page must
+not create another Lead. The form's hidden language hint is used only to select
+a known linked Contact URL when no referrer is available; it is not forwarded
+to the Lead service. The form is server-rendered and requires no JavaScript.
+
+Corporate phone/email settings are shared across languages; only editorial
+copy and visitor-facing labels vary with the linked Page/current language.
+Polylang may be disabled for a local check: Indonesian `/kontak/` must remain
+functional through the normal Page permalink, then Polylang must be reactivated.
+
+### Contact Page provisioning and cleanup
+
+Before runtime validation, snapshot the original corporate options, complete
+Lead ID set, Unit count/IDs, Career fixtures, Polylang state, permalink
+structure, and the relevant Lead abuse/rate-limit transient state. Temporary
+corporate fixtures and Indonesian/English Contact Pages may be created locally;
+they must be removed afterward. Delete only synthetic Contact-test Leads and
+restore the saved abuse transient values; preserve pre-existing Lead rows
+exactly. Restore original option values, keep Units unchanged, leave Career
+fixtures absent, reactivate Polylang, and leave permalinks unchanged. Remove
+temporary scripts, screenshots, browser artifacts, dumps, and generated caches
+before review. Contact may correctly return 404 after cleanup when no real Page
+has been provisioned in that environment.
+
 ## KPR Scheme foundation phase
 
 KPR Scheme is managed as a non-public CPT with typed metadata and one explicit

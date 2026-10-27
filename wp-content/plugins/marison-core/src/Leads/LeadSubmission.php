@@ -10,6 +10,13 @@ namespace Marison\Core\Leads;
 defined( 'ABSPATH' ) || exit;
 
 final class LeadSubmission {
+	public static function submit_general( array $input, array $server = [] ): array {
+		$input['inquiry_type'] = 'general';
+		$input['project_id']    = null;
+
+		return self::submit( $input, $server );
+	}
+
 	public static function submit( array $input, array $server = [] ): array {
 		$validated = LeadRules::validate_submission( $input );
 		if ( is_wp_error( $validated ) ) {
