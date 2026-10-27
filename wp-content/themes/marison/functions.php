@@ -91,12 +91,18 @@ function marison_contact_label( string $key ): string {
 		'contact' => [ 'id' => 'Nomor WhatsApp atau telepon', 'en' => 'WhatsApp number or telephone' ],
 		'message' => [ 'id' => 'Pesan (opsional)', 'en' => 'Message (optional)' ],
 		'consent' => [ 'id' => 'Saya menyetujui pemrosesan data ini untuk menanggapi pertanyaan saya.', 'en' => 'I consent to this data being processed to respond to my question.' ],
+		'privacy_help' => [ 'id' => 'Baca kerangka kebijakan privasi (draf, memerlukan review legal)', 'en' => 'Read the privacy notice draft (requires legal review)' ],
 		'submit' => [ 'id' => 'Kirim pertanyaan', 'en' => 'Send inquiry' ],
 		'success' => [ 'id' => 'Pertanyaan Anda sudah diterima.', 'en' => 'Your inquiry has been received.' ],
 		'error' => [ 'id' => 'Pertanyaan belum dapat dikirim. Periksa data Anda dan coba lagi.', 'en' => 'Your inquiry could not be sent. Check your details and try again.' ],
 	];
 	$language = 'en' === marison_contact_language() ? 'en' : 'id';
 	return translate( $labels[ $key ][ $language ] ?? '', 'marison' );
+}
+
+function marison_privacy_url(): string {
+	$path = 'kebijakan-privasi';
+	return class_exists( '\Marison\Core\Multilingual\Resolver' ) ? \Marison\Core\Multilingual\Resolver::localized_url( $path ) : home_url( '/' . $path . '/' );
 }
 
 function marison_render_corporate_contact(): string {
@@ -134,7 +140,7 @@ function marison_render_general_contact_form(): string {
 	$output .= '<div class="marison-form-control"><label for="marison-contact-contact">' . esc_html( marison_contact_label( 'contact' ) ) . '</label><input id="marison-contact-contact" name="contact" type="text" autocomplete="on" required /></div>';
 	$output .= '<div class="marison-form-control"><label for="marison-contact-message">' . esc_html( marison_contact_label( 'message' ) ) . '</label><textarea id="marison-contact-message" name="message" rows="5"></textarea></div>';
 	$output .= '<div class="marison-contact-form__honeypot" aria-hidden="true"><label for="marison-contact-website">Website</label><input id="marison-contact-website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>';
-	$output .= '<div class="marison-form-control marison-contact-form__consent"><label><input name="consent" type="checkbox" value="1" required /> <span>' . esc_html( marison_contact_label( 'consent' ) ) . '</span></label></div>';
+	$output .= '<div class="marison-form-control marison-contact-form__consent"><label><input name="consent" type="checkbox" value="1" required /> <span>' . esc_html( marison_contact_label( 'consent' ) ) . ' <a href="' . esc_url( marison_privacy_url() ) . '">' . esc_html( marison_contact_label( 'privacy_help' ) ) . '</a></span></label></div>';
 	$output .= '<button type="submit">' . esc_html( marison_contact_label( 'submit' ) ) . '</button></form></section>';
 
 	return $output;
@@ -515,6 +521,7 @@ function marison_render_navigation_link( array $attributes ): string {
 		'careers' => [ 'id' => 'Karier', 'en' => 'Careers' ],
 		'search' => [ 'id' => 'Cari Rumah', 'en' => 'Find a Home' ],
 		'contact' => [ 'id' => 'Kontak', 'en' => 'Contact' ],
+		'privacy' => [ 'id' => 'Kebijakan Privasi', 'en' => 'Privacy Notice' ],
 	];
 	$key = sanitize_key( $attributes['label_key'] ?? '' );
 	$language = class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::current_language() : 'id';

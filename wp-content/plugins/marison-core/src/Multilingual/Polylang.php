@@ -27,9 +27,9 @@ final class Polylang {
 	public static function post_types( array $post_types, bool $is_settings = false ): array {
 		if ( $is_settings ) { return $post_types; }
 		foreach ( [ 'marison_project', 'marison_house_type' ] as $post_type ) {
-			if ( post_type_exists( $post_type ) ) { $post_types[ $post_type ] = $post_type; }
+			$post_types[ $post_type ] = $post_type;
 		}
-		if ( post_type_exists( 'marison_career' ) ) { $post_types['marison_career'] = 'marison_career'; }
+		$post_types['marison_career'] = 'marison_career';
 		return $post_types;
 	}
 

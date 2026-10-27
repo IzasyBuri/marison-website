@@ -328,6 +328,14 @@ missing House Type or Article translations fall back to the canonical presentati
 are labelled honestly. Polylang can be inactive without disabling Indonesian Project
 Detail rendering.
 
+`marison-core` registers the Project and Career CPTs with Polylang through the
+native `pll_get_post_types` integration before Polylang builds its rewrite cache.
+This is the only V1 CPT multilingual routing integration: do not add a custom
+router or manually create `/en/perumahan/` or `/en/karier/` rewrite rules. After
+activating both plugins or changing CPT/Page slugs, save Permalinks normally and
+verify the generated English Project and Vacancy URLs, language attribute, and
+canonical fallback behavior.
+
 Project Detail availability has exactly one public source:
 
 | Mode | Public contract |
@@ -631,3 +639,144 @@ remain language-independent; no translated custom tables are created.
 
 House Type featured-media synchronization is acceptable for V1 but is not a permanent
 business rule; language-specific media may be supported only after explicit approval.
+
+## Production provisioning matrix and release checklist
+
+This section is the source-of-truth checklist for a new home computer, office
+computer, staging environment, or production environment. WordPress Pages,
+Posts, CPT records, uploads, Polylang relationships, Reading settings, and
+permalinks are environment state. They must be provisioned through normal
+WordPress administration or an approved content migration; do not commit a
+database dump, fixture content, credentials, or an automatic production seeder.
+
+### Required Page matrix
+
+| Surface | Indonesian Page name | Required slug / route | Template | Seed pattern | English linked Page | Reading / other settings |
+|---|---|---|---|---|---|---|
+| Homepage | Homepage | No public slug; recommended stable slug `homepage`, public route `/` | `front-page.html` | `homepage-content.php` | Required; link through Polylang and verify `/en/` | **Settings → Reading → A static page**; select the Indonesian Homepage as Front page. In **Languages → Settings → URL modifications**, enable **The front page URL contains the language code instead of the page name or page id**. |
+| Housing Directory | Perumahan | `perumahan` → `/perumahan/` | `page-perumahan.html` | `housing-directory-content.php` | Required; actual translated URL is runtime-owned | Save Permalinks after provisioning. Do not create a Project archive or location router. |
+| KPR | KPR | `kpr` → `/kpr/` | `page-kpr.html` | `kpr-content.php` | Required; English editorial content may differ | Provision an eligible Indonesian KPR Scheme and explicit Public Default only when approved data exists. The calculator remains `NOT_IMPLEMENTED`. |
+| Artikel Posts Page | Artikel | `artikel` → `/artikel/` | `home.html` | `article-archive-content.php` is controlled by the template | Required; link through Polylang and verify the actual English archive URL | Assign this Page under **Settings → Reading → Posts page**. Set native Post structure exactly to `/artikel/%postname%/`, then save Permalinks. |
+| Careers | Karier | `karier` → `/karier/` | `page-karier.html` | `careers-content.php` | Required; actual translated URL is runtime-owned | Provision only real published vacancies. Vacancy details use native `/karier/[vacancy]/` CPT URLs; there is no Career archive. |
+| About | Tentang Kami | `tentang-kami` → `/tentang-kami/` | `page-tentang-kami.html` | `about-content.php` | Required; actual translated slug is runtime-owned | Save Permalinks after provisioning. Editorial copy and media remain Page-owned. |
+| Contact | Kontak | `kontak` → `/kontak/` | `page-kontak.html` | `contact-content.php` | Required; actual translated URL is runtime-owned | Configure only approved corporate telephone/email options. Project contact remains on Project Detail. |
+| Privacy | Kebijakan Privasi | `kebijakan-privasi` → `/kebijakan-privasi/` | `page-kebijakan-privasi.html` | `privacy-content.php` | Required before launch; link through Polylang and verify the actual English URL | Page content must be replaced with approved final legal copy before production Lead forms are considered launch-ready. |
+
+For every translated Page, create the English Page in the normal editor,
+connect it to its Indonesian source with Polylang, and verify the generated
+current-language URL. Do not hard-code `/en/` slugs or redirect missing
+translations to English Home. When an English translation is absent, the
+existing Resolver may return the canonical Indonesian URL and the UI must make
+that fallback honest.
+
+### Polylang URL configuration
+
+For the approved Marison URL architecture, configure these values per
+environment through the normal WordPress/Polylang admin UI. They are database
+state and are not stored as theme/plugin routing logic in Git:
+
+- Pretty Permalinks enabled in **Settings → Permalinks**.
+- **Languages → Settings → URL modifications → The language is set from the
+  directory name in pretty permalinks**.
+- **Hide URL language information for default language** enabled, so Indonesian
+  remains `/` rather than `/id/`.
+- **Remove `/language/` in pretty permalinks** selected.
+- **The front page URL contains the language code instead of the page name or
+  page id** enabled. In Polylang 3.9.1 this is the `redirect_lang` checkbox.
+
+With a translated static Front Page and this option enabled, the native result
+is `/` for Indonesian and `/en/` for English. Merely linking the English Page
+translation is not sufficient; this URL-modification setting is also required.
+Do not reproduce it with a custom router, redirect, hard-coded `/en/`, or
+language-specific Reading option.
+
+### Article Posts Page setup
+
+1. Create the Indonesian **Artikel** Page with slug `artikel`.
+2. Insert the controlled article archive pattern only as the seed for editable
+   Page/content ownership; the native `home.html` template owns the archive
+   structure and the main Posts query.
+3. Assign Artikel as the Posts page under **Settings → Reading** while keeping
+   **Your homepage displays → A static page** and the Homepage selected as the
+   Front page.
+4. Create and link the English Artikel Page through Polylang, then verify its
+   actual archive URL in the current runtime.
+5. Set **Settings → Permalinks → Custom Structure** to exactly:
+
+   ```text
+   /artikel/%postname%/
+   ```
+
+6. Save Permalinks and verify `/artikel/`, the actual English archive, native
+   Indonesian `/artikel/[article]/`, translated Article detail URLs, and
+   pagination. Do not add a custom router or silently change this option from
+   PHP.
+
+### Homepage setup
+
+Create one normal Indonesian Homepage Page, insert `homepage-content.php`, and
+assign it as the Front page under **Settings → Reading → A static page**. The
+front-page template is structural; the Page owns editable copy and block
+content. Create and link the English Homepage Page through Polylang and verify
+the real English front route. Enable the native Polylang URL-modification option
+that makes the Front Page URL use the language code, so the production result is
+`/` and `/en/` rather than a translated Homepage Page slug. Do not create a
+second language-specific Reading option or commit database content.
+
+### Environment checklist
+
+For each environment, complete these steps in order:
+
+1. Checkout the approved branch/release and copy `.env.example` to a local
+   `.env`; never copy credentials between environments.
+2. Start and validate Docker WordPress/MariaDB, activate Marison and
+   marison-core, install/activate Polylang Free independently, and set `id` as
+   default with `en` as secondary.
+3. Save **Settings → Permalinks** once, configure the Polylang URL modifications
+   above, then provision the Page matrix and linked English Pages. Save
+   Permalinks again after Page/slug changes.
+4. Configure Reading settings, the Article Posts Page, and the exact Article
+   permalink structure. Verify `/`, `/en/`, the complete Article route matrix,
+   and the translated CPT routes before adding content.
+5. Provision real Projects, House Types, Units, Branch assignments, corporate
+   contacts, KPR default data, Articles, Careers, About, Contact, and approved
+   Privacy content. Use no synthetic fixtures in production.
+6. Review translated editorial content and missing-translation fallback states.
+   Confirm Project → Branch contact assignments and Lead privacy governance
+   before enabling production collection.
+7. Run the route, link, accessibility, security, and responsive smoke checks;
+   preserve a deployment record outside Git for environment-specific settings.
+
+### Readiness categories
+
+**CODE READY:** theme templates/patterns, localized Resolver links, existing
+Lead pipeline, Project/Unit/Career/KPR/Article read models, privacy hooks, and
+the no-CMP baseline.
+
+**CONTENT REQUIRED:** real Projects, location terms, House Types, Unit
+inventory, Branch assignments, Articles, vacancies, About copy/media, Contact
+editorial copy, and translated Page/Post content.
+
+**CONFIGURATION REQUIRED:** theme/plugin activation, Polylang languages and
+links, Reading settings, `/artikel/%postname%/`, corporate telephone/email,
+eligible KPR default, Project/Branch relationships, and normal Permalink saves.
+The Project/Career CPT translation registration is code-provided; the linked
+English records and generated runtime URLs still require content provisioning
+and verification.
+
+**LEGAL CONTENT READY / LEGAL REVIEW REQUIRED:** this category is not ready in
+V1. Replace the Privacy seed with final approved policy copy, decide
+retention/access/deletion governance, approve localized wording, and confirm the
+consent link points to the published localized Privacy Page. Until this is
+complete, the public Lead code may be tested in development but the forms are
+**not production-launch-ready**.
+
+### Final legal and tracking decisions
+
+**Terms:** not implemented in V1. A Terms Page requires separate business/legal
+approval and approved content.
+
+**Cookies/CMP:** no cookie banner or CMP is installed. The audited V1 frontend
+has no approved analytics tracker, advertising tracker, marketing pixel, or
+third-party marketing embed. Reassess privacy/cookie requirements separately
+if future tracking technology is approved.
