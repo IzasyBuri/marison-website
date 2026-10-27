@@ -100,9 +100,41 @@ function marison_contact_label( string $key ): string {
 	return translate( $labels[ $key ][ $language ] ?? '', 'marison' );
 }
 
+function marison_public_page_url( string $path ): string {
+	$path = trim( $path, '/' );
+	$page = $path ? get_page_by_path( $path, OBJECT, 'page' ) : null;
+	if ( ! $page && $path ) {
+		$pages = get_posts(
+			[
+				'post_type'        => 'page',
+				'post_status'      => 'any',
+				'name'             => sanitize_title( $path ),
+				'posts_per_page'   => 1,
+				'suppress_filters' => true,
+			]
+		);
+		$page = $pages[0] ?? null;
+	}
+	if ( ! $page || 'publish' !== get_post_status( $page ) ) {
+		return '';
+	}
+
+	$canonical_url = get_permalink( $page );
+	if ( ! class_exists( '\Marison\Core\Multilingual\Resolver' ) || \Marison\Core\Multilingual\Resolver::current_language() === \Marison\Core\Multilingual\Polylang::default_language() ) {
+		return $canonical_url ? (string) $canonical_url : '';
+	}
+
+	$translated_id = \Marison\Core\Multilingual\Resolver::translated_post_id( (int) $page->ID, \Marison\Core\Multilingual\Resolver::current_language() );
+	if ( $translated_id && 'publish' === get_post_status( $translated_id ) ) {
+		$localized_url = \Marison\Core\Multilingual\Resolver::localized_url( $path );
+		return $localized_url ?: (string) $canonical_url;
+	}
+
+	return $canonical_url ? (string) $canonical_url : '';
+}
+
 function marison_privacy_url(): string {
-	$path = 'kebijakan-privasi';
-	return class_exists( '\Marison\Core\Multilingual\Resolver' ) ? \Marison\Core\Multilingual\Resolver::localized_url( $path ) : home_url( '/' . $path . '/' );
+	return marison_public_page_url( 'kebijakan-privasi' );
 }
 
 function marison_render_corporate_contact(): string {
@@ -140,7 +172,9 @@ function marison_render_general_contact_form(): string {
 	$output .= '<div class="marison-form-control"><label for="marison-contact-contact">' . esc_html( marison_contact_label( 'contact' ) ) . '</label><input id="marison-contact-contact" name="contact" type="text" autocomplete="on" required /></div>';
 	$output .= '<div class="marison-form-control"><label for="marison-contact-message">' . esc_html( marison_contact_label( 'message' ) ) . '</label><textarea id="marison-contact-message" name="message" rows="5"></textarea></div>';
 	$output .= '<div class="marison-contact-form__honeypot" aria-hidden="true"><label for="marison-contact-website">Website</label><input id="marison-contact-website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>';
-	$output .= '<div class="marison-form-control marison-contact-form__consent"><label><input name="consent" type="checkbox" value="1" required /> <span>' . esc_html( marison_contact_label( 'consent' ) ) . ' <a href="' . esc_url( marison_privacy_url() ) . '">' . esc_html( marison_contact_label( 'privacy_help' ) ) . '</a></span></label></div>';
+	$privacy_url = marison_privacy_url();
+	$privacy_link = $privacy_url ? ' <a href="' . esc_url( $privacy_url ) . '">' . esc_html( marison_contact_label( 'privacy_help' ) ) . '</a>' : '';
+	$output .= '<div class="marison-form-control marison-contact-form__consent"><label><input name="consent" type="checkbox" value="1" required /> <span>' . esc_html( marison_contact_label( 'consent' ) ) . $privacy_link . '</span></label></div>';
 	$output .= '<button type="submit">' . esc_html( marison_contact_label( 'submit' ) ) . '</button></form></section>';
 
 	return $output;
@@ -527,6 +561,10 @@ function marison_render_navigation_link( array $attributes ): string {
 	$language = class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::current_language() : 'id';
 	$label = $keys[ $key ][ 'en' === $language ? 'en' : 'id' ] ?? sanitize_text_field( $attributes['label_key'] ?? '' );
 	$path = sanitize_text_field( $attributes['path'] ?? '/' );
+	if ( 'privacy' === $key ) {
+		$url = marison_privacy_url();
+		return $url ? '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>' : '';
+	}
 	$url = class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::localized_url( $path ) : home_url( $path );
 	if ( '/karier/' === trailingslashit( $path ) && is_singular( 'marison_career' ) && class_exists( '\\Marison\\Core\\Presentation\\Career' ) ) {
 		$career = \Marison\Core\Presentation\Career::detail_state( get_queried_object_id() );
