@@ -16,6 +16,7 @@ require_once __DIR__ . '/Admin/Menus.php';
 require_once __DIR__ . '/Admin/MetaBoxes.php';
 require_once __DIR__ . '/Contact/WhatsApp.php';
 require_once __DIR__ . '/Contact/ContactResolver.php';
+require_once __DIR__ . '/Contact/CorporateContact.php';
 require_once __DIR__ . '/Settings/CorporateSettings.php';
 require_once __DIR__ . '/KPR/SchemeRules.php';
 require_once __DIR__ . '/KPR/PublicDefault.php';
@@ -118,6 +119,8 @@ final class Plugin {
 		add_action( 'init', [ LeadPrivacy::class, 'register' ] );
 		add_action( 'admin_post_marison_submit_lead', [ \Marison\Core\Leads\LeadSubmissionController::class, 'handle' ] );
 		add_action( 'admin_post_nopriv_marison_submit_lead', [ \Marison\Core\Leads\LeadSubmissionController::class, 'handle' ] );
+		add_action( 'admin_post_marison_submit_general_lead', [ \Marison\Core\Leads\LeadSubmissionController::class, 'handle_general' ] );
+		add_action( 'admin_post_nopriv_marison_submit_general_lead', [ \Marison\Core\Leads\LeadSubmissionController::class, 'handle_general' ] );
 		add_action( 'admin_menu', [ UnitInventory::class, 'register' ] );
 		add_action( 'admin_post_marison_save_unit', [ UnitInventory::class, 'handle_save' ] );
 		add_action( 'admin_post_marison_delete_unit', [ UnitInventory::class, 'handle_delete' ] );

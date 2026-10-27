@@ -69,8 +69,76 @@ add_action(
 		register_block_type( 'marison/navigation-link', [ 'render_callback' => 'marison_render_navigation_link', 'attributes' => [ 'label_key' => [ 'type' => 'string' ], 'path' => [ 'type' => 'string' ], 'variant' => [ 'type' => 'string' ] ] ] );
 		register_block_type( 'marison/career-list', [ 'render_callback' => 'marison_render_career_list' ] );
 		register_block_type( 'marison/career-application', [ 'render_callback' => 'marison_render_career_application' ] );
+		register_block_type( 'marison/corporate-contact', [ 'render_callback' => 'marison_render_corporate_contact' ] );
+		register_block_type( 'marison/general-contact-form', [ 'render_callback' => 'marison_render_general_contact_form' ] );
 	}
 );
+
+function marison_contact_language(): string {
+	return class_exists( '\\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::current_language() : 'id';
+}
+
+function marison_contact_label( string $key ): string {
+	$labels = [
+		'corporate_channels' => [ 'id' => 'Saluran kontak korporat', 'en' => 'Corporate contact channels' ],
+		'telephone' => [ 'id' => 'Telepon korporat', 'en' => 'Corporate phone' ],
+		'email' => [ 'id' => 'Email korporat', 'en' => 'Corporate email' ],
+		'unavailable' => [ 'id' => 'Kontak korporat belum tersedia', 'en' => 'Corporate contact is not configured yet' ],
+		'unavailable_detail' => [ 'id' => 'Belum ada saluran kontak korporat yang dapat ditampilkan.', 'en' => 'No corporate contact channel is configured for display yet.' ],
+		'general_inquiry' => [ 'id' => 'Pertanyaan umum', 'en' => 'General inquiry' ],
+		'general_inquiry_intro' => [ 'id' => 'Gunakan formulir ini untuk pertanyaan umum kepada Marison.', 'en' => 'Use this form for a general question for Marison.' ],
+		'name' => [ 'id' => 'Nama', 'en' => 'Name' ],
+		'contact' => [ 'id' => 'Nomor WhatsApp atau telepon', 'en' => 'WhatsApp number or telephone' ],
+		'message' => [ 'id' => 'Pesan (opsional)', 'en' => 'Message (optional)' ],
+		'consent' => [ 'id' => 'Saya menyetujui pemrosesan data ini untuk menanggapi pertanyaan saya.', 'en' => 'I consent to this data being processed to respond to my question.' ],
+		'submit' => [ 'id' => 'Kirim pertanyaan', 'en' => 'Send inquiry' ],
+		'success' => [ 'id' => 'Pertanyaan Anda sudah diterima.', 'en' => 'Your inquiry has been received.' ],
+		'error' => [ 'id' => 'Pertanyaan belum dapat dikirim. Periksa data Anda dan coba lagi.', 'en' => 'Your inquiry could not be sent. Check your details and try again.' ],
+	];
+	$language = 'en' === marison_contact_language() ? 'en' : 'id';
+	return translate( $labels[ $key ][ $language ] ?? '', 'marison' );
+}
+
+function marison_render_corporate_contact(): string {
+	$read_model = '\\Marison\\Core\\Contact\\CorporateContact';
+	$view = class_exists( $read_model ) ? $read_model::read() : [ 'state' => 'unavailable', 'channels' => [] ];
+	$output = '<section class="marison-contact-channels" aria-labelledby="marison-contact-channels-heading"><h2 id="marison-contact-channels-heading">' . esc_html( marison_contact_label( 'corporate_channels' ) ) . '</h2>';
+
+	if ( 'available' !== ( $view['state'] ?? '' ) || empty( $view['channels'] ) ) {
+		return $output . '<div class="marison-contact-channels__unavailable" role="status"><p class="marison-contact-channels__state">' . esc_html( marison_contact_label( 'unavailable' ) ) . '</p><p>' . esc_html( marison_contact_label( 'unavailable_detail' ) ) . '</p></div></section>';
+	}
+
+	$output .= '<ul class="marison-contact-channels__list">';
+	foreach ( $view['channels'] as $channel ) {
+		$kind = 'email' === ( $channel['kind'] ?? '' ) ? 'email' : 'telephone';
+		$output .= '<li class="marison-contact-channel marison-contact-channel--' . esc_attr( $kind ) . '"><p class="marison-contact-channel__label">' . esc_html( marison_contact_label( $kind ) ) . '</p><a href="' . esc_url( $channel['url'] ?? '' ) . '">' . esc_html( $channel['value'] ?? '' ) . '</a></li>';
+	}
+	return $output . '</ul></section>';
+}
+
+function marison_render_general_contact_form(): string {
+	$result_value = $_GET['marison_lead_result'] ?? '';
+	$result       = is_scalar( $result_value ) ? sanitize_key( wp_unslash( $result_value ) ) : '';
+	$notice = '';
+	if ( 'success' === $result ) {
+		$notice = '<div class="marison-contact-form__notice marison-contact-form__notice--success" role="status" aria-live="polite">' . esc_html( marison_contact_label( 'success' ) ) . '</div>';
+	} elseif ( 'error' === $result ) {
+		$notice = '<div class="marison-contact-form__notice marison-contact-form__notice--error" role="alert">' . esc_html( marison_contact_label( 'error' ) ) . '</div>';
+	}
+
+	$action = esc_url( admin_url( 'admin-post.php' ) );
+	$nonce  = wp_nonce_field( 'marison_submit_lead', 'marison_lead_nonce', true, false );
+	$output = '<section class="marison-contact-form" aria-labelledby="marison-contact-form-heading"><h2 id="marison-contact-form-heading">' . esc_html( marison_contact_label( 'general_inquiry' ) ) . '</h2><p>' . esc_html( marison_contact_label( 'general_inquiry_intro' ) ) . '</p>' . $notice;
+	$output .= '<form method="post" action="' . $action . '"><input type="hidden" name="action" value="marison_submit_general_lead" /><input type="hidden" name="marison_contact_language" value="' . esc_attr( marison_contact_language() ) . '" />' . $nonce;
+	$output .= '<div class="marison-form-control"><label for="marison-contact-name">' . esc_html( marison_contact_label( 'name' ) ) . '</label><input id="marison-contact-name" name="name" type="text" autocomplete="name" required /></div>';
+	$output .= '<div class="marison-form-control"><label for="marison-contact-contact">' . esc_html( marison_contact_label( 'contact' ) ) . '</label><input id="marison-contact-contact" name="contact" type="text" autocomplete="on" required /></div>';
+	$output .= '<div class="marison-form-control"><label for="marison-contact-message">' . esc_html( marison_contact_label( 'message' ) ) . '</label><textarea id="marison-contact-message" name="message" rows="5"></textarea></div>';
+	$output .= '<div class="marison-contact-form__honeypot" aria-hidden="true"><label for="marison-contact-website">Website</label><input id="marison-contact-website" name="website" type="text" tabindex="-1" autocomplete="off" /></div>';
+	$output .= '<div class="marison-form-control marison-contact-form__consent"><label><input name="consent" type="checkbox" value="1" required /> <span>' . esc_html( marison_contact_label( 'consent' ) ) . '</span></label></div>';
+	$output .= '<button type="submit">' . esc_html( marison_contact_label( 'submit' ) ) . '</button></form></section>';
+
+	return $output;
+}
 
 function marison_career_language(): string {
 	return class_exists( '\Marison\\Core\\Multilingual\\Resolver' ) ? \Marison\Core\Multilingual\Resolver::current_language() : 'id';
